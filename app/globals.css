@@ -58,7 +58,13 @@ p {
 }
 
 /* ─── Focus Styles (Accessibility) ────────────────────────── */
-:focus-visible {
+/* Suppress ALL default focus outlines — only show on keyboard nav */
+*:focus {
+  outline: none;
+}
+
+/* Re-enable only for keyboard navigation */
+*:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
   border-radius: 4px;
@@ -66,20 +72,40 @@ p {
 
 /* ─── Selection ────────────────────────────────────────────── */
 ::selection {
-  background: var(--accent-light);
-  color: var(--text-primary);
+  background: #000000;
+  color: #ffffff;
+}
+
+::-moz-selection {
+  background: #000000;
+  color: #ffffff;
 }
 
 /* ─── Marquee Animation ────────────────────────────────────── */
 @keyframes marquee {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 32s linear infinite;
+  will-change: transform;
+}
+
+/* Legacy class kept for compatibility */
 .animate-marquee {
-  animation: marquee 30s linear infinite;
+  animation: marquee 32s linear infinite;
 }
 
+.marquee-container {
+  overflow: hidden;
+  /* Critical: prevents right-edge clip */
+  width: 100%;
+}
+
+.marquee-container:hover .marquee-track,
 .marquee-container:hover .animate-marquee {
   animation-play-state: paused;
 }

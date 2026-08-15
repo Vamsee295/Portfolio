@@ -1,8 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, FileText } from "lucide-react";
 import dynamic from "next/dynamic";
+import { profile } from "../../data/profile";
 
 // Lazy-load the canvas to avoid SSR issues
 const SystemVisual = dynamic(() => import("./SystemVisual"), { ssr: false });
@@ -69,7 +70,9 @@ export default function Hero() {
             >
               I BUILD
               <br />
-              <span className="text-[#2563eb]">INTELLIGENT</span>
+              <span className="inline-block bg-[#dbeafe] text-[#111111] px-4 py-1 my-1 rounded-xl">
+                INTELLIGENT
+              </span>
               <br />
               SOFTWARE.
             </motion.h1>
@@ -91,7 +94,7 @@ export default function Hero() {
             >
               <button
                 onClick={scrollToWork}
-                className="group inline-flex items-center gap-2 bg-[#111111] text-white px-6 py-3.5 rounded-full text-sm font-semibold hover:bg-[#2563eb] transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563eb] focus-visible:ring-offset-2"
+                className="group inline-flex items-center gap-2 bg-[#111111] text-white px-6 py-3.5 rounded-full text-sm font-semibold hover:bg-[#222222] transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111111] focus-visible:ring-offset-2"
                 aria-label="Explore selected projects"
               >
                 Explore My Work
@@ -102,17 +105,21 @@ export default function Hero() {
                 />
               </button>
 
-              <button
-                disabled
-                className="inline-flex items-center gap-2 bg-transparent text-[#9ca3af] px-6 py-3.5 rounded-full text-sm font-semibold border border-[#e5e7eb] cursor-not-allowed"
-                aria-label="Resume — coming soon"
-                title="Resume coming soon"
+              <a
+                href={profile.resume}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center gap-2 bg-transparent text-[#6b7280] px-6 py-3.5 rounded-full text-sm font-semibold border border-[#e5e7eb] hover:border-[#111111] hover:text-[#111111] hover:bg-[#f8fafc] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111111] focus-visible:ring-offset-2"
+                aria-label="View resume PDF (opens in new tab)"
               >
+                <FileText size={16} aria-hidden="true" />
                 View Resume
-                <span className="text-xs bg-[#f3f4f6] text-[#9ca3af] px-2 py-0.5 rounded-full font-mono">
-                  soon
-                </span>
-              </button>
+                <ArrowRight
+                  size={14}
+                  className="group-hover:translate-x-1 transition-transform duration-200"
+                  aria-hidden="true"
+                />
+              </a>
             </motion.div>
 
             {/* Scroll indicator */}
@@ -154,7 +161,7 @@ export default function Hero() {
 
               {/* Activity state label — bottom center, changes with animation */}
               <div className="absolute bottom-6 left-1/2 -translate-x-1/2 pointer-events-none">
-                <span className="text-[9px] font-mono font-semibold tracking-[0.2em] text-[#2563eb] opacity-50 uppercase">
+                <span className="text-[9px] font-mono font-semibold tracking-[0.2em] text-[#111111] opacity-40 uppercase">
                   LIVE SYSTEM
                 </span>
               </div>
@@ -165,4 +172,5 @@ export default function Hero() {
     </section>
   );
 }
+
 

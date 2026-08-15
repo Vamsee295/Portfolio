@@ -246,16 +246,16 @@ export default function SystemVisual() {
       });
 
       // ─────────────────────────────────────────────────────────
-      // LAYER 1 — Radial background glow
+      // LAYER 1 — Radial background glow (Monochrome black/gray)
       // ─────────────────────────────────────────────────────────
-      const bg = ctx.createRadialGradient(W/2,H/2,0, W/2,H/2, Math.min(W,H)*0.48);
-      bg.addColorStop(0, "rgba(37,99,235,0.04)");
-      bg.addColorStop(1, "rgba(37,99,235,0)");
+      const bg = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, Math.min(W, H)*0.48);
+      bg.addColorStop(0, "rgba(0, 0, 0, 0.02)");
+      bg.addColorStop(1, "rgba(0, 0, 0, 0)");
       ctx.fillStyle = bg;
       ctx.fillRect(0, 0, W, H);
 
       // ─────────────────────────────────────────────────────────
-      // LAYER 2 — Orbital rings (slow rotation)
+      // LAYER 2 — Orbital rings (Monochrome light gray)
       // ─────────────────────────────────────────────────────────
       if (!prefersReducedMotion) {
         s.ring1 += 0.0018;
@@ -263,9 +263,9 @@ export default function SystemVisual() {
       }
 
       const rings = [
-        { rFrac: 0.42, speed: 1,    opacity: 0.055, dashLen: Math.PI * 0.4 },
-        { rFrac: 0.31, speed: -0.7, opacity: 0.045, dashLen: Math.PI * 0.55 },
-        { rFrac: 0.20, speed: 0.5,  opacity: 0.07,  dashLen: Math.PI * 0.3 },
+        { rFrac: 0.42, speed: 1,    opacity: 0.05,  dashLen: Math.PI * 0.4 },
+        { rFrac: 0.31, speed: -0.7, opacity: 0.04,  dashLen: Math.PI * 0.55 },
+        { rFrac: 0.20, speed: 0.5,  opacity: 0.065, dashLen: Math.PI * 0.3 },
       ];
 
       rings.forEach((ring, ri) => {
@@ -274,18 +274,18 @@ export default function SystemVisual() {
           ? (s.time * ring.speed * 0.35 + ri * 1.2)
           : ri * 1.2;
 
-        // Full ring (very faint)
+        // Full ring (faint monochrome gray)
         ctx.beginPath();
         ctx.arc(W/2, H/2, r, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(37,99,235,${ring.opacity * 0.6})`;
-        ctx.lineWidth = 0.7;
+        ctx.strokeStyle = `rgba(0, 0, 0, ${ring.opacity * 0.75})`;
+        ctx.lineWidth = 0.75;
         ctx.stroke();
 
         // Arc segment traveling around ring
         if (!prefersReducedMotion) {
           ctx.beginPath();
           ctx.arc(W/2, H/2, r, angle, angle + ring.dashLen);
-          ctx.strokeStyle = `rgba(37,99,235,${ring.opacity * 1.8})`;
+          ctx.strokeStyle = `rgba(0, 0, 0, ${ring.opacity * 2.2})`;
           ctx.lineWidth = 1;
           ctx.stroke();
 
@@ -294,13 +294,13 @@ export default function SystemVisual() {
           const sy = H/2 + Math.sin(angle + ring.dashLen) * r;
           ctx.beginPath();
           ctx.arc(sx, sy, 1.8, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(37,99,235,${ring.opacity * 3.5})`;
+          ctx.fillStyle = `rgba(0, 0, 0, ${ring.opacity * 4.5})`;
           ctx.fill();
         }
       });
 
       // ─────────────────────────────────────────────────────────
-      // LAYER 3 — Connection lines
+      // LAYER 3 — Connection lines (Monochrome black with controlled opacity)
       // ─────────────────────────────────────────────────────────
       CONNECTIONS.forEach((c) => {
         const fn = nodeMap[c.from];
@@ -318,14 +318,14 @@ export default function SystemVisual() {
             (p.fromId === c.to   && p.toId === c.from)
         );
 
-        // Active connections are brighter, particle-active ones brightest
-        const opacity = 0.07 + activation * 0.22 + (hasParticle ? 0.13 : 0);
-        const width = hasParticle ? 1.1 : 0.65;
+        // Controlled monochrome opacity
+        const opacity = 0.06 + activation * 0.28 + (hasParticle ? 0.16 : 0);
+        const width = hasParticle ? 1.15 : 0.7;
 
         const grad = ctx.createLinearGradient(fp.x, fp.y, tp.x, tp.y);
-        grad.addColorStop(0,   `rgba(37,99,235,${opacity})`);
-        grad.addColorStop(0.5, `rgba(37,99,235,${opacity * 1.5})`);
-        grad.addColorStop(1,   `rgba(37,99,235,${opacity})`);
+        grad.addColorStop(0,   `rgba(0, 0, 0, ${opacity * 0.85})`);
+        grad.addColorStop(0.5, `rgba(0, 0, 0, ${opacity * 1.3})`);
+        grad.addColorStop(1,   `rgba(0, 0, 0, ${opacity * 0.85})`);
 
         ctx.beginPath();
         ctx.moveTo(fp.x, fp.y);
@@ -336,7 +336,7 @@ export default function SystemVisual() {
       });
 
       // ─────────────────────────────────────────────────────────
-      // LAYER 4 — Particles (data flow)
+      // LAYER 4 — Particles (Monochrome black/gray data flow)
       // ─────────────────────────────────────────────────────────
       s.particles.forEach((p) => {
         const fn = nodeMap[p.fromId];
@@ -353,45 +353,45 @@ export default function SystemVisual() {
         const fade = Math.sin(p.progress * Math.PI);
         const alpha = p.opacity * fade;
 
-        // Soft glow halo
-        const glow = ctx.createRadialGradient(x, y, 0, x, y, p.size * 4);
-        glow.addColorStop(0, `rgba(59,130,246,${alpha * 0.35})`);
-        glow.addColorStop(1, "rgba(59,130,246,0)");
+        // Soft monochrome halo
+        const glow = ctx.createRadialGradient(x, y, 0, x, y, p.size * 3.5);
+        glow.addColorStop(0, `rgba(0, 0, 0, ${alpha * 0.14})`);
+        glow.addColorStop(1, "rgba(0, 0, 0, 0)");
         ctx.beginPath();
-        ctx.arc(x, y, p.size * 4, 0, Math.PI * 2);
+        ctx.arc(x, y, p.size * 3.5, 0, Math.PI * 2);
         ctx.fillStyle = glow;
         ctx.fill();
 
-        // Particle core
+        // Particle core (pure black)
         ctx.beginPath();
-        ctx.arc(x, y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(59,130,246,${alpha})`;
+        ctx.arc(x, y, p.size * 0.9, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(0, 0, 0, ${alpha * 0.85})`;
         ctx.fill();
       });
 
       // ─────────────────────────────────────────────────────────
-      // LAYER 5 — Nodes
+      // LAYER 5 — Nodes (Monochrome black & white)
       // ─────────────────────────────────────────────────────────
       NODES.forEach((n, ni) => {
         const { x: nx, y: ny } = px(n);
         const activation = s.nodeAct[n.id] || 0;
 
         if (n.isCore) {
-          // ── AI Core ──────────────────────────────────────────
+          // ── AI Core (Monochrome Black) ───────────────────────
           const breath = 1 + 0.07 * Math.sin(s.time * 1.1);
           const cr = n.size * breath;
 
-          // Outer ambient glow
-          const glow1 = ctx.createRadialGradient(nx, ny, 0, nx, ny, cr * 5.5);
-          glow1.addColorStop(0, "rgba(37,99,235,0.20)");
-          glow1.addColorStop(0.5,"rgba(37,99,235,0.07)");
-          glow1.addColorStop(1, "rgba(37,99,235,0)");
+          // Outer ambient soft gray glow
+          const glow1 = ctx.createRadialGradient(nx, ny, 0, nx, ny, cr * 5);
+          glow1.addColorStop(0, "rgba(0, 0, 0, 0.08)");
+          glow1.addColorStop(0.5,"rgba(0, 0, 0, 0.025)");
+          glow1.addColorStop(1, "rgba(0, 0, 0, 0)");
           ctx.beginPath();
-          ctx.arc(nx, ny, cr * 5.5, 0, Math.PI * 2);
+          ctx.arc(nx, ny, cr * 5, 0, Math.PI * 2);
           ctx.fillStyle = glow1;
           ctx.fill();
 
-          // Rotating dashed arc (outer)
+          // Rotating dashed arc (outer - black/gray)
           if (!prefersReducedMotion) {
             const a1 = s.time * 0.65;
             ctx.save();
@@ -399,8 +399,8 @@ export default function SystemVisual() {
             ctx.rotate(a1);
             ctx.beginPath();
             ctx.arc(0, 0, cr + 8, 0, Math.PI * 1.6);
-            ctx.strokeStyle = "rgba(37,99,235,0.35)";
-            ctx.lineWidth = 1.2;
+            ctx.strokeStyle = "rgba(0, 0, 0, 0.28)";
+            ctx.lineWidth = 1.1;
             ctx.stroke();
             ctx.restore();
 
@@ -410,68 +410,68 @@ export default function SystemVisual() {
             ctx.rotate(-a1 * 0.55 + Math.PI * 0.7);
             ctx.beginPath();
             ctx.arc(0, 0, cr + 5, 0, Math.PI * 0.9);
-            ctx.strokeStyle = "rgba(37,99,235,0.22)";
-            ctx.lineWidth = 0.9;
+            ctx.strokeStyle = "rgba(0, 0, 0, 0.16)";
+            ctx.lineWidth = 0.85;
             ctx.stroke();
             ctx.restore();
           } else {
             // Static ring in reduced-motion
             ctx.beginPath();
             ctx.arc(nx, ny, cr + 7, 0, Math.PI * 2);
-            ctx.strokeStyle = "rgba(37,99,235,0.25)";
+            ctx.strokeStyle = "rgba(0, 0, 0, 0.20)";
             ctx.lineWidth = 1;
             ctx.stroke();
           }
 
-          // Core fill
+          // Core fill (solid black gradient)
           const coreGrad = ctx.createRadialGradient(nx - cr*0.2, ny - cr*0.2, 0, nx, ny, cr);
-          coreGrad.addColorStop(0, "rgba(79,130,255,1)");
-          coreGrad.addColorStop(1, "rgba(29,78,216,1)");
+          coreGrad.addColorStop(0, "rgba(34, 34, 34, 1)");
+          coreGrad.addColorStop(1, "rgba(0, 0, 0, 1)");
           ctx.beginPath();
           ctx.arc(nx, ny, cr, 0, Math.PI * 2);
           ctx.fillStyle = coreGrad;
           ctx.fill();
 
-          // Core label — two lines centered
+          // Core label — white text
           ctx.font = `bold 6.5px var(--font-geist-mono, monospace)`;
-          ctx.fillStyle = "rgba(255,255,255,0.95)";
+          ctx.fillStyle = "rgba(255, 255, 255, 0.95)";
           ctx.textAlign = "center";
           ctx.textBaseline = "middle";
           ctx.fillText("AI",   nx, ny - 3);
           ctx.fillText("CORE", nx, ny + 4);
 
         } else {
-          // ── Peripheral node ───────────────────────────────────
+          // ── Peripheral node (Monochrome) ──────────────────────
           const pulse = 1 + 0.1 * Math.sin(s.time * 1.7 + ni * 1.5);
           const r = n.size * pulse;
 
-          // Glow
-          const glowA = 0.04 + activation * 0.18;
-          const glow = ctx.createRadialGradient(nx, ny, 0, nx, ny, r * 5);
-          glow.addColorStop(0, `rgba(37,99,235,${glowA})`);
-          glow.addColorStop(1, "rgba(37,99,235,0)");
+          // Soft gray glow on active
+          const glowA = 0.025 + activation * 0.12;
+          const glow = ctx.createRadialGradient(nx, ny, 0, nx, ny, r * 4.5);
+          glow.addColorStop(0, `rgba(0, 0, 0, ${glowA})`);
+          glow.addColorStop(1, "rgba(0, 0, 0, 0)");
           ctx.beginPath();
-          ctx.arc(nx, ny, r * 5, 0, Math.PI * 2);
+          ctx.arc(nx, ny, r * 4.5, 0, Math.PI * 2);
           ctx.fillStyle = glow;
           ctx.fill();
 
-          // Outer ring — brightens with activation
+          // Outer ring — subtle gray, darkens with activation
           ctx.beginPath();
           ctx.arc(nx, ny, r + 4, 0, Math.PI * 2);
-          ctx.strokeStyle = `rgba(37,99,235,${0.12 + activation * 0.4})`;
-          ctx.lineWidth = 0.8;
+          ctx.strokeStyle = `rgba(0, 0, 0, ${0.10 + activation * 0.35})`;
+          ctx.lineWidth = 0.75;
           ctx.stroke();
 
-          // White fill with slight blue tint when active
+          // Pure white fill with crisp black border
           ctx.beginPath();
           ctx.arc(nx, ny, r, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(255,255,255,1)`;
+          ctx.fillStyle = `rgba(255, 255, 255, 1)`;
           ctx.fill();
-          ctx.strokeStyle = `rgba(37,99,235,${0.45 + activation * 0.55})`;
-          ctx.lineWidth = activation > 0.5 ? 2 : 1.5;
+          ctx.strokeStyle = `rgba(0, 0, 0, ${0.45 + activation * 0.55})`;
+          ctx.lineWidth = activation > 0.5 ? 2 : 1.4;
           ctx.stroke();
 
-          // Label — pushed outward from center
+          // Label — crisp monochrome black/dark-gray
           const dx = n.x - 0.5;
           const dy = n.y - 0.5;
           const len = Math.sqrt(dx * dx + dy * dy) || 1;
@@ -482,7 +482,7 @@ export default function SystemVisual() {
           const fontSize = 7.5 + activation * 1.5;
           const weight = activation > 0.6 ? "700" : "500";
           ctx.font = `${weight} ${fontSize}px var(--font-geist-mono, monospace)`;
-          ctx.fillStyle = `rgba(37,99,235,${0.62 + activation * 0.38})`;
+          ctx.fillStyle = `rgba(0, 0, 0, ${0.55 + activation * 0.45})`;
           ctx.textAlign = "center";
           ctx.textBaseline = "middle";
           ctx.fillText(n.label, labelX, labelY);

@@ -54,7 +54,7 @@ export default function Skills() {
           transition={{ duration: 0.55, delay: 0.2 }}
           className="text-base text-[#6b7280] mb-14 max-w-lg"
         >
-          Technologies and tools I&rsquo;m comfortable with and actively work on.
+          Technologies and tools I use across my projects.
         </motion.p>
 
         {/* Skill category cards */}
@@ -111,4 +111,5 @@ export default function Skills() {
     </section>
   );
 }
+
 

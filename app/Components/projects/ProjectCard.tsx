@@ -5,15 +5,19 @@ import { ArrowRight } from "lucide-react";
 import { useRef } from "react";
 import type { Project } from "../../data/projects";
 import {
+  UltronPreview,
   DashboardPreview,
   MultiAgentPreview,
   IDEPreview,
+  ReminderPreview,
 } from "./ProjectPreviews";
 
 const previewMap: Record<string, React.ReactNode> = {
-  dashboard: <DashboardPreview />,
+  ultron:     <UltronPreview />,
+  dashboard:  <DashboardPreview />,
   multiagent: <MultiAgentPreview />,
-  ide: <IDEPreview />,
+  ide:        <IDEPreview />,
+  reminder:   <ReminderPreview />,
 };
 
 interface ProjectCardProps {
@@ -35,7 +39,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
         delay: index * 0.12,
         ease: "easeOut",
       }}
-      className="group relative bg-white border border-[#e5e7eb] rounded-2xl overflow-hidden hover:border-[#2563eb] hover:border-opacity-40 hover:shadow-xl hover:shadow-blue-50 transition-all duration-400"
+      className="group relative bg-white border border-[#e5e7eb] rounded-2xl overflow-hidden hover:border-[#111111] hover:shadow-xl hover:shadow-[rgba(0,0,0,0.06)] transition-all duration-400"
       style={{ transition: "all 0.35s cubic-bezier(0.22, 1, 0.36, 1)" }}
     >
       <div className="grid lg:grid-cols-2 gap-0">
@@ -44,7 +48,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
           <div>
             {/* Number + Category */}
             <div className="flex items-center justify-between mb-6">
-              <span className="text-xs font-mono font-bold text-[#2563eb] opacity-60">
+              <span className="text-xs font-mono font-bold text-[#111111] opacity-70">
                 {project.number}
               </span>
               <span className="text-[10px] font-mono font-semibold tracking-[0.12em] text-[#9ca3af] uppercase">
@@ -53,7 +57,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
             </div>
 
             {/* Title */}
-            <h3 className="text-2xl lg:text-3xl font-black tracking-tight text-[#111111] mb-4 leading-tight group-hover:text-[#2563eb] transition-colors duration-300">
+            <h3 className="text-2xl lg:text-3xl font-black tracking-tight text-[#111111] mb-4 leading-tight group-hover:text-[#000000] transition-colors duration-300">
               {project.title}
             </h3>
 
@@ -78,7 +82,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
           {/* CTA */}
           <div className="mt-8 pt-6 border-t border-[#f3f4f6]">
             <button
-              className="group/btn inline-flex items-center gap-2 text-sm font-semibold text-[#111111] hover:text-[#2563eb] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563eb] rounded"
+              className="group/btn inline-flex items-center gap-2 text-sm font-semibold text-[#6b7280] hover:text-[#111111] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111111] rounded"
               onClick={() => {}} // Will link to project pages in future
               aria-label={`View ${project.title} project details (coming soon)`}
               disabled
@@ -109,4 +113,5 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
     </motion.article>
   );
 }
+
 

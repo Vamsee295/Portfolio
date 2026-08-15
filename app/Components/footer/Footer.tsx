@@ -1,4 +1,5 @@
 import { GitBranch, Mail } from "lucide-react";
+import { profile } from "../../data/profile";
 
 const LinkedinIcon = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -9,11 +10,11 @@ const LinkedinIcon = () => (
 );
 
 export default function Footer() {
-  const currentYear = 2026;
+  const currentYear = new Date().getFullYear();
 
   return (
     <footer
-      className="border-t border-[#e5e7eb] py-12 bg-[#fafafa]"
+      className="border-t border-[#e5e7eb] py-10 bg-[#fafafa]"
       role="contentinfo"
     >
       <div className="max-w-6xl mx-auto px-6">
@@ -31,7 +32,7 @@ export default function Footer() {
           {/* Center — Social links */}
           <nav aria-label="Footer social links" className="flex items-center gap-6">
             <a
-              href="https://github.com/vamseevemulapalli"
+              href={profile.social.github}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="GitHub (opens in new tab)"
@@ -41,7 +42,7 @@ export default function Footer() {
               GitHub
             </a>
             <a
-              href="https://linkedin.com/in/vamseevemulapalli"
+              href={profile.social.linkedin}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="LinkedIn (opens in new tab)"
@@ -51,7 +52,7 @@ export default function Footer() {
               LinkedIn
             </a>
             <a
-              href="mailto:vamseevemulapalli@example.com"
+              href={profile.social.email}
               aria-label="Send email"
               className="flex items-center gap-1.5 text-xs font-medium text-[#6b7280] hover:text-[#111111] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563eb] rounded"
             >

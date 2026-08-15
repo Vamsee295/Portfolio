@@ -1,6 +1,8 @@
 "use client";
 
 const items = [
+  "VISION",
+  "SPRING BOOT",
   "AI / ML",
   "AI AGENTS",
   "SOFTWARE ENGINEERING",
@@ -10,19 +12,17 @@ const items = [
   "SQL",
   "REACT",
   "TYPESCRIPT",
-  "NEXT.JS",
   "MACHINE LEARNING",
   "LLMs",
-  "COMPUTER VISION",
-  "SPRING BOOT",
+  "GITHUB",
 ];
 
 function MarqueeItem({ label }: { label: string }) {
   return (
-    <span className="inline-flex items-center gap-4 px-6 text-sm font-mono font-medium tracking-[0.12em] text-[#6b7280] uppercase whitespace-nowrap select-none">
+    <span className="inline-flex items-center gap-4 px-6 text-[11px] font-mono font-medium tracking-[0.14em] text-[#6b7280] uppercase whitespace-nowrap select-none flex-shrink-0">
       {label}
       <span
-        className="inline-block w-1 h-1 rounded-full bg-[#2563eb] opacity-60 flex-shrink-0"
+        className="inline-block w-1 h-1 rounded-full bg-[#2563eb] opacity-50 flex-shrink-0"
         aria-hidden="true"
       />
     </span>
@@ -30,20 +30,20 @@ function MarqueeItem({ label }: { label: string }) {
 }
 
 export default function TechStrip() {
-  // Duplicate items for seamless loop
-  const duplicated = [...items, ...items];
+  // Triple duplication ensures seamless loop at all viewport widths
+  const track = [...items, ...items, ...items];
 
   return (
     <section
-      className="py-6 border-y border-[#e5e7eb] bg-[#fafafa] overflow-hidden marquee-container"
+      className="py-5 border-y border-[#e5e7eb] bg-[#fafafa] marquee-container"
       aria-label="Technology focus areas"
     >
-      <div
-        className="flex animate-marquee"
-        style={{ width: `${duplicated.length * 180}px` }}
-      >
-        {duplicated.map((item, i) => (
-          <MarqueeItem key={`${item}-${i}`} label={item} />
+      {/* marquee-track uses the CSS class we defined in globals.css */}
+      <div className="marquee-track" role="list">
+        {track.map((item, i) => (
+          <span key={`${item}-${i}`} role="listitem">
+            <MarqueeItem label={item} />
+          </span>
         ))}
       </div>
     </section>

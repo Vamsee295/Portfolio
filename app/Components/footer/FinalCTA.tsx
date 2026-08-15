@@ -3,6 +3,7 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { ArrowRight, GitBranch, Mail } from "lucide-react";
+import { profile } from "../../data/profile";
 
 const LinkedinIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -19,7 +20,7 @@ export default function FinalCTA() {
   return (
     <section
       id="contact"
-      className="py-32 border-t border-[#e5e7eb]"
+      className="py-24 border-t border-[#e5e7eb]"
       aria-labelledby="cta-heading"
     >
       <div ref={ref} className="max-w-4xl mx-auto px-6 text-center">
@@ -43,7 +44,9 @@ export default function FinalCTA() {
         >
           LET&rsquo;S BUILD SOMETHING
           <br />
-          <span className="text-[#2563eb]">MEANINGFUL.</span>
+          <span className="inline-block bg-[#dbeafe] text-[#111111] px-4 py-1 my-1 rounded-xl">
+            MEANINGFUL.
+          </span>
         </motion.h2>
 
         {/* Supporting text */}
@@ -53,7 +56,7 @@ export default function FinalCTA() {
           transition={{ duration: 0.6, delay: 0.25 }}
           className="text-base sm:text-lg text-[#6b7280] mb-12 max-w-lg mx-auto"
         >
-          Interested in AI, software, or interesting engineering problems? I&rsquo;d
+          Interested in AI, software engineering, or building something useful? I&rsquo;d
           love to connect.
         </motion.p>
 
@@ -65,8 +68,8 @@ export default function FinalCTA() {
           className="flex flex-wrap items-center justify-center gap-4"
         >
           <a
-            href="mailto:vamseevemulapalli@example.com"
-            className="group inline-flex items-center gap-2 bg-[#111111] text-white px-7 py-4 rounded-full text-sm font-semibold hover:bg-[#2563eb] transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563eb] focus-visible:ring-offset-2"
+            href={profile.social.email}
+            className="group inline-flex items-center gap-2 bg-[#111111] text-white px-7 py-4 rounded-full text-sm font-semibold hover:bg-[#222222] transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111111] focus-visible:ring-offset-2"
             aria-label="Send email to Vamsee"
           >
             <Mail size={16} aria-hidden="true" />
@@ -79,10 +82,10 @@ export default function FinalCTA() {
           </a>
 
           <a
-            href="https://github.com/vamseevemulapalli"
+            href={profile.social.github}
             target="_blank"
             rel="noopener noreferrer"
-            className="group inline-flex items-center gap-2 bg-transparent text-[#111111] px-7 py-4 rounded-full text-sm font-semibold border border-[#e5e7eb] hover:border-[#111111] hover:bg-[#f8fafc] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563eb] focus-visible:ring-offset-2"
+            className="group inline-flex items-center gap-2 bg-transparent text-[#111111] px-7 py-4 rounded-full text-sm font-semibold border border-[#e5e7eb] hover:border-[#111111] hover:bg-[#f8fafc] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111111] focus-visible:ring-offset-2"
             aria-label="View GitHub profile (opens in new tab)"
           >
             <GitBranch size={16} aria-hidden="true" />
@@ -93,4 +96,5 @@ export default function FinalCTA() {
     </section>
   );
 }
+
 
