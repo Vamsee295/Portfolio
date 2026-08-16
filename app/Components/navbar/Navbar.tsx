@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, GitBranch, FileText } from "lucide-react";
+import Link from "next/link";
 import { profile } from "../../data/profile";
 
 const LinkedinIcon = () => (
@@ -14,9 +15,10 @@ const LinkedinIcon = () => (
 );
 
 const navLinks = [
-  { label: "Work",       href: "#work" },
-  { label: "About",      href: "#about" },
-  { label: "Experience", href: "#experience" },
+  { label: "Work",       href: "/#work" },
+  { label: "Labs",       href: "/playground" },
+  { label: "About",      href: "/#about" },
+  { label: "Experience", href: "/#experience" },
 ];
 
 export default function Navbar() {
@@ -36,10 +38,16 @@ export default function Navbar() {
   }, []);
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    if (href.startsWith("#")) {
-      e.preventDefault();
-      const el = document.querySelector(href);
-      if (el) el.scrollIntoView({ behavior: "smooth" });
+    if (href.startsWith("/#")) {
+      const isCurrentPageRoot = window.location.pathname === "/";
+      if (isCurrentPageRoot) {
+        e.preventDefault();
+        const id = href.replace(/^\/#/, "#");
+        const el = document.querySelector(id);
+        if (el) el.scrollIntoView({ behavior: "smooth" });
+        setMobileOpen(false);
+      }
+    } else {
       setMobileOpen(false);
     }
   };
@@ -74,14 +82,14 @@ export default function Navbar() {
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-7">
             {navLinks.map((link) => (
-              <a
+              <Link
                 key={link.label}
                 href={link.href}
                 onClick={(e) => handleNavClick(e, link.href)}
                 className="text-sm font-medium text-[#6b7280] hover:text-[#111111] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111111] rounded px-1"
               >
                 {link.label}
-              </a>
+              </Link>
             ))}
 
             {/* Resume — opens PDF in new tab */}
@@ -147,17 +155,20 @@ export default function Navbar() {
           >
             <div className="px-6 py-4 flex flex-col gap-1">
               {navLinks.map((link, i) => (
-                <motion.a
+                <motion.div
                   key={link.label}
-                  href={link.href}
-                  onClick={(e) => handleNavClick(e, link.href)}
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.05 }}
-                  className="py-3 text-base font-medium border-b border-[#f3f4f6] last:border-0 text-[#6b7280] hover:text-[#111111] transition-colors"
                 >
-                  {link.label}
-                </motion.a>
+                  <Link
+                    href={link.href}
+                    onClick={(e) => handleNavClick(e, link.href)}
+                    className="block py-3 text-base font-medium border-b border-[#f3f4f6] text-[#6b7280] hover:text-[#111111] transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                </motion.div>
               ))}
               {/* Mobile Resume */}
               <motion.a

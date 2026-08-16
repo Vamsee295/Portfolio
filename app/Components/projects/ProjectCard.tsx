@@ -5,19 +5,15 @@ import { ArrowRight } from "lucide-react";
 import { useRef } from "react";
 import type { Project } from "../../data/projects";
 import {
-  UltronPreview,
-  DashboardPreview,
+  CodeAgentPreview,
   MultiAgentPreview,
-  IDEPreview,
-  ReminderPreview,
+  EduRiskPreview,
 } from "./ProjectPreviews";
 
 const previewMap: Record<string, React.ReactNode> = {
-  ultron:     <UltronPreview />,
-  dashboard:  <DashboardPreview />,
+  codeagent:  <CodeAgentPreview />,
   multiagent: <MultiAgentPreview />,
-  ide:        <IDEPreview />,
-  reminder:   <ReminderPreview />,
+  edurisk:    <EduRiskPreview />,
 };
 
 interface ProjectCardProps {
@@ -81,19 +77,20 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 
           {/* CTA */}
           <div className="mt-8 pt-6 border-t border-[#f3f4f6]">
-            <button
+            <a
+              href={project.githubUrl}
+              target="_blank"
+              rel="noopener noreferrer"
               className="group/btn inline-flex items-center gap-2 text-sm font-semibold text-[#6b7280] hover:text-[#111111] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111111] rounded"
-              onClick={() => {}} // Will link to project pages in future
-              aria-label={`View ${project.title} project details (coming soon)`}
-              disabled
+              aria-label={`View ${project.title} on GitHub`}
             >
-              View Project
+              View on GitHub
               <ArrowRight
                 size={15}
                 className="group-hover/btn:translate-x-1 transition-transform duration-200"
                 aria-hidden="true"
               />
-            </button>
+            </a>
           </div>
         </div>
 
@@ -105,7 +102,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
             transition={{ duration: 0.3, ease: "easeOut" }}
           >
             <div className="w-full" style={{ aspectRatio: "4/3" }}>
-              {previewMap[project.previewType]}
+              {project.previewType ? previewMap[project.previewType] : null}
             </div>
           </motion.div>
         </div>
