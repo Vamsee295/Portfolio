@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { ViewModeProvider } from "./context/ViewModeContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -47,7 +48,9 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full`}
     >
       <body className="min-h-full bg-white text-[#111111] antialiased">
-        {children}
+        <ViewModeProvider>
+          {children}
+        </ViewModeProvider>
       </body>
     </html>
   );

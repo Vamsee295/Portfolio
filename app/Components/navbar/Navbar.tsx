@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, GitBranch, FileText } from "lucide-react";
 import Link from "next/link";
 import { profile } from "../../data/profile";
+import ViewModeSwitcher from "../common/ViewModeSwitcher";
 
 const LinkedinIcon = () => (
   <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -104,6 +105,11 @@ export default function Navbar() {
             </Link>
           </div>
 
+          {/* View Mode Switcher - desktop */}
+          <div className="hidden md:block">
+            <ViewModeSwitcher />
+          </div>
+
           {/* Desktop Social Icons */}
           <div className="hidden md:flex items-center gap-3">
             <a
@@ -185,20 +191,31 @@ export default function Navbar() {
                 </Link>
               </motion.div>
 
-              <div className="flex gap-5 pt-4">
+              {/* View Mode Switcher — mobile */}
+              <motion.div
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: (navLinks.length + 1) * 0.05 }}
+                className="pt-2 pb-1"
+              >
+                <span className="block text-[10px] font-mono font-bold tracking-[0.15em] text-[#9ca3af] uppercase mb-2">View Mode</span>
+                <ViewModeSwitcher compact />
+              </motion.div>
+
+              <div className="flex flex-col gap-2 pt-4">
                 <a
                   href={profile.social.github}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-sm text-[#6b7280] hover:text-[#111111] transition-colors"
+                  className="flex items-center gap-3 py-3 px-1 min-h-[44px] text-sm text-[#6b7280] hover:text-[#111111] transition-colors"
                 >
-                  <GitBranch size={16} aria-hidden="true" /> GitHub
+                  <GitBranch size={18} aria-hidden="true" /> GitHub
                 </a>
                 <a
                   href={profile.social.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-sm text-[#6b7280] hover:text-[#111111] transition-colors"
+                  className="flex items-center gap-3 py-3 px-1 min-h-[44px] text-sm text-[#6b7280] hover:text-[#111111] transition-colors"
                 >
                   <LinkedinIcon /> LinkedIn
                 </a>

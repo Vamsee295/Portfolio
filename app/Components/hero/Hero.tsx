@@ -3,7 +3,9 @@
 import { motion } from "framer-motion";
 import { ArrowRight, FileText } from "lucide-react";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import { profile } from "../../data/profile";
+import { useViewMode } from "../../context/ViewModeContext";
 
 // Lazy-load the canvas to avoid SSR issues
 const SystemVisual = dynamic(() => import("./SystemVisual"), { ssr: false });
@@ -25,6 +27,8 @@ const itemVariants = {
 };
 
 export default function Hero() {
+  const { effectiveMode } = useViewMode();
+
   const scrollToWork = () => {
     document.querySelector("#work")?.scrollIntoView({ behavior: "smooth" });
   };
@@ -35,7 +39,7 @@ export default function Hero() {
       className="relative min-h-screen flex items-center overflow-hidden pt-16"
       aria-label="Hero section"
     >
-      {/* Background texture — very subtle grid */}
+      {/* Background texture */}
       <div
         className="absolute inset-0 opacity-[0.025] pointer-events-none"
         style={{
@@ -47,7 +51,81 @@ export default function Hero() {
       />
 
       <div className="relative z-10 max-w-6xl mx-auto px-6 w-full py-20">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+        {/* Mobile Experience — vertical, compact, thumb-friendly */}
+        {effectiveMode === "mobile" && (
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="flex flex-col items-center text-center gap-8 max-w-lg mx-auto py-8"
+          >
+            <motion.p
+              variants={itemVariants}
+              className="text-xs font-mono font-semibold tracking-[0.22em] text-[#2563eb] uppercase"
+            >
+              CS · AI/ML · SOFTWARE
+            </motion.p>
+
+            <motion.h1
+              variants={itemVariants}
+              className="text-5xl font-black leading-[1.0] tracking-[-0.04em] text-[#111111]"
+            >
+              I BUILD{" "}
+              <span className="inline-block bg-[#dbeafe] text-[#111111] px-3 py-1 rounded-xl">
+                INTELLIGENT
+              </span>
+              {" "}SOFTWARE.
+            </motion.h1>
+
+            <motion.p
+              variants={itemVariants}
+              className="text-base text-[#6b7280] leading-relaxed"
+            >
+              Computer Science student focused on AI/ML, software engineering,
+              and building practical intelligent systems.
+            </motion.p>
+
+            {/* Mobile CTAs — full-width large touch targets */}
+            <motion.div variants={itemVariants} className="flex flex-col gap-3 w-full">
+              <button
+                onClick={scrollToWork}
+                className="w-full flex items-center justify-center gap-2 bg-[#111111] text-white py-4 rounded-2xl text-sm font-bold hover:bg-[#222222] active:scale-[0.98] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111111]"
+                aria-label="Explore selected projects"
+              >
+                Explore My Work
+                <ArrowRight size={16} aria-hidden="true" />
+              </button>
+
+              <Link
+                href={profile.resume}
+                className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-sm font-bold border border-[#e5e7eb] text-[#6b7280] hover:border-[#111111] hover:text-[#111111] active:scale-[0.98] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111111]"
+                aria-label="View Resume"
+              >
+                <FileText size={16} aria-hidden="true" />
+                View Resume
+              </Link>
+            </motion.div>
+
+            <motion.div
+              variants={itemVariants}
+              className="flex items-center gap-3"
+            >
+              <motion.div
+                animate={{ y: [0, 6, 0] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                className="w-5 h-8 border border-[#d1d5db] rounded-full flex items-start justify-center pt-1.5"
+                aria-hidden="true"
+              >
+                <div className="w-1 h-2 bg-[#9ca3af] rounded-full" />
+              </motion.div>
+              <span className="text-xs font-mono text-[#9ca3af] tracking-widest uppercase">scroll</span>
+            </motion.div>
+          </motion.div>
+        )}
+
+        {/* Desktop Experience — two-column, rich visuals */}
+        {effectiveMode === "desktop" && (
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Left — Text */}
           <motion.div
             variants={containerVariants}
@@ -105,12 +183,10 @@ export default function Hero() {
                 />
               </button>
 
-              <a
+              <Link
                 href={profile.resume}
-                target="_blank"
-                rel="noopener noreferrer"
                 className="group inline-flex items-center gap-2 bg-transparent text-[#6b7280] px-6 py-3.5 rounded-full text-sm font-semibold border border-[#e5e7eb] hover:border-[#111111] hover:text-[#111111] hover:bg-[#f8fafc] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111111] focus-visible:ring-offset-2"
-                aria-label="View resume PDF (opens in new tab)"
+                aria-label="View Resume"
               >
                 <FileText size={16} aria-hidden="true" />
                 View Resume
@@ -119,7 +195,7 @@ export default function Hero() {
                   className="group-hover:translate-x-1 transition-transform duration-200"
                   aria-hidden="true"
                 />
-              </a>
+              </Link>
             </motion.div>
 
             {/* Scroll indicator */}
@@ -167,7 +243,8 @@ export default function Hero() {
               </div>
             </div>
           </motion.div>
-        </div>
+          </div>
+        )}
       </div>
     </section>
   );
