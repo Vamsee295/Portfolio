@@ -3,6 +3,7 @@
 import { motion, useInView } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { useRef } from "react";
+import Link from "next/link";
 import type { Project } from "../../data/projects";
 import {
   CodeAgentPreview,
@@ -76,21 +77,48 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
           </div>
 
           {/* CTA */}
-          <div className="mt-8 pt-6 border-t border-[#f3f4f6]">
-            <a
-              href={project.githubUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group/btn inline-flex items-center gap-2 text-sm font-semibold text-[#6b7280] hover:text-[#111111] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111111] rounded"
-              aria-label={`View ${project.title} on GitHub`}
-            >
-              View on GitHub
-              <ArrowRight
-                size={15}
-                className="group-hover/btn:translate-x-1 transition-transform duration-200"
-                aria-hidden="true"
-              />
-            </a>
+          <div className="mt-8 pt-6 border-t border-[#f3f4f6] flex items-center justify-between">
+            {project.featured ? (
+              <Link
+                href={`/projects/${project.id === "student-dropout-risk" ? "edurisk" : project.id}`}
+                className="group/btn inline-flex items-center gap-2 px-6 py-2.5 bg-[#111111] text-white rounded-lg text-sm font-semibold hover:bg-[#000000] hover:shadow-lg transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111111]"
+                aria-label={`View case study for ${project.title}`}
+              >
+                View Case Study
+                <ArrowRight
+                  size={15}
+                  className="group-hover/btn:translate-x-1 transition-transform duration-200"
+                  aria-hidden="true"
+                />
+              </Link>
+            ) : (
+              <a
+                href={project.githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group/btn inline-flex items-center gap-2 text-sm font-semibold text-[#6b7280] hover:text-[#111111] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111111] rounded"
+                aria-label={`View ${project.title} on GitHub`}
+              >
+                View on GitHub
+                <ArrowRight
+                  size={15}
+                  className="group-hover/btn:translate-x-1 transition-transform duration-200"
+                  aria-hidden="true"
+                />
+              </a>
+            )}
+
+            {project.featured && (
+              <a
+                href={project.githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[11px] font-mono font-bold tracking-widest text-[#9ca3af] uppercase hover:text-[#111111] transition-colors"
+                aria-label={`View ${project.title} on GitHub`}
+              >
+                GitHub ↗
+              </a>
+            )}
           </div>
         </div>
 

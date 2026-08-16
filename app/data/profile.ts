@@ -123,5 +123,6 @@ export const profile = {
     linkedin: "https://www.linkedin.com/in/vemulapalli-vamsee/",
     email: "mailto:2300033830cseh1@gmail.com",
   },
-  resume: "/resume.pdf",
+  resume: "/resume",
+  resumePdfUrl: "/resume/Vamsee_CV.pdf",
 };

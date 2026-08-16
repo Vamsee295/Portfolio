@@ -92,17 +92,16 @@ export default function Navbar() {
               </Link>
             ))}
 
-            {/* Resume — opens PDF in new tab */}
-            <a
+            {/* Resume — navigates to dedicated resume viewer */}
+            <Link
               href={profile.resume}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Open resume PDF (opens in new tab)"
+              onClick={() => setMobileOpen(false)}
+              aria-label="View Resume"
               className="inline-flex items-center gap-1.5 text-sm font-medium text-[#6b7280] hover:text-[#111111] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111111] rounded px-1"
             >
               <FileText size={14} aria-hidden="true" />
               Resume
-            </a>
+            </Link>
           </div>
 
           {/* Desktop Social Icons */}
@@ -171,18 +170,20 @@ export default function Navbar() {
                 </motion.div>
               ))}
               {/* Mobile Resume */}
-              <motion.a
-                href={profile.resume}
-                target="_blank"
-                rel="noopener noreferrer"
+              <motion.div
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: navLinks.length * 0.05 }}
-                className="py-3 text-base font-medium border-b border-[#f3f4f6] text-[#6b7280] hover:text-[#111111] transition-colors flex items-center gap-2"
               >
-                <FileText size={15} aria-hidden="true" />
-                Resume
-              </motion.a>
+                <Link
+                  href={profile.resume}
+                  onClick={() => setMobileOpen(false)}
+                  className="py-3 text-base font-medium border-b border-[#f3f4f6] text-[#6b7280] hover:text-[#111111] transition-colors flex items-center gap-2"
+                >
+                  <FileText size={15} aria-hidden="true" />
+                  Resume
+                </Link>
+              </motion.div>
 
               <div className="flex gap-5 pt-4">
                 <a
