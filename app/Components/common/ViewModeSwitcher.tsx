@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { Monitor, Smartphone } from "lucide-react";
 import { useViewMode, type ViewMode } from "../../context/ViewModeContext";
 
@@ -45,29 +45,10 @@ export default function ViewModeSwitcher({ compact = false }: { compact?: boolea
   // Full switcher for navbar
   return (
     <div
-      className="relative flex items-center gap-0.5 p-1 bg-[#f8fafc] border border-[#e5e7eb] rounded-lg"
+      className="relative flex items-center p-1 bg-[#f8fafc] border border-[#e5e7eb] rounded-lg"
       role="group"
       aria-label="View mode switcher"
     >
-      {/* Animated background pill */}
-      <AnimatePresence initial={false}>
-        {options.map((opt) =>
-          mode === opt.mode ? (
-            <motion.div
-              key={opt.mode}
-              layoutId="view-mode-pill"
-              className="absolute inset-1 bg-white border border-[#e5e7eb] rounded-md shadow-sm"
-              style={{
-                // Calculate width and left based on which option is active
-                width: `calc(100% / ${options.length} - 2px)`,
-                left: `calc(${options.indexOf(opt)} * (100% / ${options.length}) + 2px)`,
-              }}
-              transition={{ type: "spring", stiffness: 400, damping: 35 }}
-            />
-          ) : null
-        )}
-      </AnimatePresence>
-
       {options.map((opt) => {
         const isActive = mode === opt.mode;
         return (
@@ -76,19 +57,28 @@ export default function ViewModeSwitcher({ compact = false }: { compact?: boolea
             onClick={() => setMode(opt.mode)}
             aria-label={`Switch to ${opt.label} view`}
             aria-pressed={isActive}
-            className={`relative z-10 flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[10px] font-bold tracking-widest uppercase transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111111] whitespace-nowrap ${
+            className={`relative flex items-center justify-center px-2.5 py-1 rounded-md text-[10px] font-bold tracking-widest uppercase transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111111] whitespace-nowrap ${
               isActive ? "text-[#111111]" : "text-[#9ca3af] hover:text-[#6b7280]"
             }`}
           >
-            {opt.icon}
-            {opt.label}
+            {isActive && (
+              <motion.div
+                layoutId="view-mode-pill"
+                className="absolute inset-0 bg-white border border-[#e5e7eb] rounded-md shadow-sm"
+                transition={{ type: "spring", stiffness: 450, damping: 35 }}
+              />
+            )}
+            <span className="relative z-10 flex items-center gap-1.5">
+              {opt.icon}
+              <span>{opt.label}</span>
+            </span>
           </button>
         );
       })}
 
       {/* Effective mode indicator dot */}
       <span
-        className="relative z-10 ml-1 w-1.5 h-1.5 rounded-full bg-[#10b981] flex-shrink-0"
+        className="relative z-10 mx-1.5 w-1.5 h-1.5 rounded-full bg-[#10b981] flex-shrink-0"
         title={`Currently showing: ${effectiveMode} experience`}
         aria-hidden="true"
       />

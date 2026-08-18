@@ -20,6 +20,7 @@ const navLinks = [
   { label: "Labs",       href: "/playground" },
   { label: "About",      href: "/#about" },
   { label: "Experience", href: "/#experience" },
+  { label: "Certifications", href: "/#certifications" },
 ];
 
 export default function Navbar() {
