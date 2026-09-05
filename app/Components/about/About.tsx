@@ -4,146 +4,186 @@ import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { profile } from "../../data/profile";
 
+// ─── Data ─────────────────────────────────────────────────────────────────────
+
+const EXPLORING = [
+  "AI AGENTS",
+  "LOCAL LLMs",
+  "MACHINE LEARNING",
+  "DEVELOPER TOOLS",
+  "DATA SYSTEMS",
+];
+
+const PHILOSOPHY = [
+  { label: "UNDERSTAND", desc: "Start with the problem." },
+  { label: "DESIGN",     desc: "Build the simplest useful system." },
+  { label: "CONNECT",    desc: "Combine models, data and software." },
+  { label: "SHIP",       desc: "Turn the idea into something usable." },
+];
+
+// ─── Shared fade-up variant ────────────────────────────────────────────────────
+const fadeUp = (delay = 0) => ({
+  initial: { opacity: 0, y: 20 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, amount: 0.15 },
+  transition: { duration: 0.6, delay, ease: "easeOut" as const },
+});
+
 export default function About() {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, amount: 0.2 });
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const inView = useInView(sectionRef, { once: true, amount: 0.1 });
 
   return (
     <section
       id="about"
+      ref={sectionRef}
       className="py-24 bg-[#fafafa] border-t border-[#e5e7eb]"
       aria-labelledby="about-heading"
     >
-      <div ref={ref} className="max-w-6xl mx-auto px-6">
-        {/* Eyebrow — Step 1 */}
-        <motion.p
-          initial={{ opacity: 0, y: 16 }}
+      <div className="max-w-6xl mx-auto px-6">
+
+        {/* ── Top bar: eyebrow label ── */}
+        <div className="flex items-center justify-between mb-14">
+          <motion.p
+            {...fadeUp(0)}
+            className="text-[10px] font-mono font-bold tracking-[0.25em] text-[#2563eb] uppercase"
+          >
+            ABOUT
+          </motion.p>
+          <motion.p
+            {...fadeUp(0.06)}
+            className="text-[10px] font-mono tracking-[0.18em] text-[#94a3b8] uppercase hidden sm:block"
+          >
+            01&nbsp;/&nbsp;ABOUT VAMSEE
+          </motion.p>
+        </div>
+
+        {/* ── Main statement headline — full width, dominant ── */}
+        <motion.h2
+          id="about-heading"
+          initial={{ opacity: 0, y: 32 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.55, ease: "easeOut" }}
-          className="text-xs font-mono font-semibold tracking-[0.22em] text-[#2563eb] mb-8 uppercase"
+          transition={{ duration: 0.75, delay: 0.1, ease: "easeOut" }}
+          className="text-[clamp(26px,4.5vw,52px)] font-black tracking-[-0.02em] leading-[1.1] text-[#0F172A] uppercase mb-16 max-w-3xl"
         >
-          ABOUT
-        </motion.p>
+          I LIKE BUILDING SYSTEMS THAT MAKE COMPLEX TECHNOLOGY FEEL SIMPLE.
+        </motion.h2>
 
-        <div className="grid lg:grid-cols-2 gap-16 items-start">
-          {/* Left — Statement & Paragraphs */}
-          <div>
-            {/* Main Headline — Step 2 */}
-            <motion.h2
-              id="about-heading"
-              initial={{ opacity: 0, y: 24 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.7, delay: 0.12, ease: "easeOut" }}
-              className="text-3xl lg:text-4xl font-black tracking-[-0.02em] text-[#111111] mb-8 leading-[1.15]"
-            >
-              {profile.about_statement}
-            </motion.h2>
+        {/* ── Asymmetric grid: 60 / 40 ── */}
+        <div className="grid lg:grid-cols-[1fr_380px] gap-x-20 gap-y-16 items-start">
 
-            <div className="space-y-4">
-              {/* Paragraph 1 — Step 3 */}
+          {/* ────────────────── LEFT COLUMN ────────────────── */}
+          <div className="flex flex-col gap-12">
+
+            {/* Description paragraphs */}
+            <div className="flex flex-col gap-5">
               <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={inView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.7, delay: 0.22, ease: "easeOut" }}
-                className="text-base text-[#6b7280] leading-relaxed"
+                {...fadeUp(0.2)}
+                className="text-[15px] text-[#475569] leading-[1.75]"
               >
                 {profile.about_description}
               </motion.p>
-
-              {/* Paragraph 2 — Step 4 */}
               <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={inView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.7, delay: 0.32, ease: "easeOut" }}
-                className="text-base text-[#6b7280] leading-relaxed"
+                {...fadeUp(0.28)}
+                className="text-[15px] text-[#475569] leading-[1.75]"
               >
                 {profile.about_secondary}
               </motion.p>
             </div>
+
+            {/* ── Engineering philosophy ── */}
+            <motion.div {...fadeUp(0.36)}>
+              <p className="text-[10px] font-mono font-bold tracking-[0.22em] text-[#94a3b8] uppercase mb-6">
+                HOW I APPROACH BUILDING
+              </p>
+              <div className="flex flex-col gap-5">
+                {PHILOSOPHY.map((step, i) => (
+                  <motion.div
+                    key={step.label}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={inView ? { opacity: 1, x: 0 } : {}}
+                    transition={{ duration: 0.45, delay: 0.42 + i * 0.07, ease: "easeOut" }}
+                    className="flex gap-4 items-start"
+                  >
+                    {/* Number */}
+                    <span className="font-mono text-[11px] font-bold text-[#2563eb] mt-0.5 w-5 shrink-0">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <div>
+                      <p className="font-mono text-[11px] font-bold tracking-[0.18em] text-[#0F172A] uppercase mb-0.5">
+                        {step.label}
+                      </p>
+                      <p className="text-[13px] text-[#64748B]">{step.desc}</p>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
           </div>
 
-          {/* Right — Profile card — Step 5 */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.75, delay: 0.28, ease: "easeOut" }}
-            className="bg-white border border-[#e5e7eb] rounded-2xl p-8 shadow-sm"
-          >
-            {/* Avatar */}
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: 0.38, ease: "easeOut" }}
-              className="w-14 h-14 rounded-full bg-[#dbeafe] flex items-center justify-center mb-6 border border-[#bfdbfe]"
-            >
-              <span
-                className="text-xl font-black text-[#2563eb]"
-                aria-hidden="true"
-              >
-                V
-              </span>
+          {/* ────────────────── RIGHT COLUMN — identity block ── */}
+          {/*
+            Sits ~40px lower than the left column (pt-10) to create the
+            intentional asymmetry that breaks the "generated grid" feel.
+          */}
+          <div className="flex flex-col gap-10 lg:pt-10">
+
+            {/* Identity */}
+            <motion.div {...fadeUp(0.22)}>
+              <p className="text-[22px] font-black tracking-[-0.01em] text-[#0F172A] uppercase mb-1">
+                VAMSEE
+              </p>
+              <p className="font-mono text-[11px] tracking-[0.2em] text-[#64748B] uppercase mb-1">
+                COMPUTER SCIENCE STUDENT
+              </p>
+              <p className="font-mono text-[11px] tracking-[0.14em] text-[#94a3b8] uppercase">
+                AI&nbsp;/&nbsp;ML&nbsp;·&nbsp;SOFTWARE&nbsp;·&nbsp;DATA
+              </p>
             </motion.div>
 
-            {/* Name + Role */}
+            {/* Divider */}
             <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: 0.44, ease: "easeOut" }}
-              className="mb-6 pb-6 border-b border-[#f3f4f6]"
-            >
-              <p className="text-xs font-mono text-[#9ca3af] tracking-widest uppercase mb-1">
-                NAME
-              </p>
-              <h3 className="text-lg font-black text-[#111111]">
-                {profile.name}
-              </h3>
-              <p className="text-sm text-[#6b7280] mt-1">{profile.role}</p>
-            </motion.div>
+              initial={{ scaleX: 0, opacity: 0 }}
+              animate={inView ? { scaleX: 1, opacity: 1 } : {}}
+              transition={{ duration: 0.5, delay: 0.32, ease: "easeOut" }}
+              className="h-px bg-[#e2e8f0] origin-left"
+              aria-hidden="true"
+            />
 
-            {/* Current Focus */}
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: 0.5, ease: "easeOut" }}
-              className="mb-5"
-            >
-              <p className="text-xs font-mono text-[#9ca3af] tracking-widest uppercase mb-3">
-                CURRENT FOCUS
+            {/* Currently Exploring */}
+            <motion.div {...fadeUp(0.38)}>
+              <p className="text-[10px] font-mono font-bold tracking-[0.22em] text-[#94a3b8] uppercase mb-5">
+                CURRENTLY EXPLORING
               </p>
-              <div className="flex flex-col gap-2">
-                {profile.focus.map((area, i) => (
+              <div className="flex flex-col gap-3">
+                {EXPLORING.map((item, i) => (
                   <motion.div
-                    key={area}
-                    initial={{ opacity: 0, x: -8 }}
+                    key={item}
+                    initial={{ opacity: 0, x: 10 }}
                     animate={inView ? { opacity: 1, x: 0 } : {}}
-                    transition={{ duration: 0.4, delay: 0.54 + i * 0.05, ease: "easeOut" }}
-                    className="flex items-center gap-2"
+                    transition={{ duration: 0.4, delay: 0.44 + i * 0.06, ease: "easeOut" }}
+                    className="group flex items-center gap-4 cursor-default"
+                    role="listitem"
                   >
-                    <div
-                      className="w-1 h-1 rounded-full bg-[#2563eb] flex-shrink-0"
+                    {/* Numbered indicator */}
+                    <span className="font-mono text-[11px] font-bold text-[#2563eb] w-5 shrink-0">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    {/* Rule */}
+                    <span
+                      className="block h-px w-4 bg-[#cbd5e1] group-hover:w-6 group-hover:bg-[#2563eb] transition-all duration-200"
                       aria-hidden="true"
                     />
-                    <span className="text-sm font-medium text-[#374151]">
-                      {area}
+                    {/* Label */}
+                    <span className="font-mono text-[11px] font-bold tracking-[0.16em] text-[#334155] uppercase group-hover:text-[#0F172A] transition-colors duration-200 group-hover:translate-x-1 inline-block transition-transform">
+                      {item}
                     </span>
                   </motion.div>
                 ))}
               </div>
             </motion.div>
 
-            {/* Based In Location */}
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: 0.74, ease: "easeOut" }}
-              className="pt-4 border-t border-[#f3f4f6]"
-            >
-              <p className="text-xs font-mono text-[#9ca3af] tracking-widest uppercase mb-1">
-                BASED IN
-              </p>
-              <p className="text-sm font-medium text-[#374151]">{profile.location}</p>
-            </motion.div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>
