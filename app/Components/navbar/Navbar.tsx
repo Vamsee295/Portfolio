@@ -61,33 +61,36 @@ export default function Navbar() {
         transition={{ duration: 0.5, ease: "easeOut" }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           scrolled
-            ? "bg-white/90 backdrop-blur-md border-b border-[#e5e7eb] shadow-sm"
-            : "bg-transparent"
+            ? "bg-paper/90 backdrop-blur-md border-b-[2.5px] border-ink"
+            : "bg-transparent border-b-[2.5px] border-transparent"
         }`}
         role="banner"
       >
         <nav
-          className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between"
+          className="max-w-[1180px] mx-auto px-[clamp(18px,4vw,40px)] h-16 flex items-center justify-between"
           aria-label="Main navigation"
         >
           {/* Logo */}
           <a
             href="#"
             onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }}
-            className="text-[#111111] font-bold text-sm tracking-[0.18em] uppercase hover:text-[#000000] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111111] rounded"
+            className="group flex items-center gap-2.5 rounded text-ink"
             aria-label="Vamsee Vemulapalli — home"
           >
-            VAMSEE
+            <span className="font-display text-2xl uppercase leading-none">Vamsee</span>
+            <span className="hidden lg:inline-block whitespace-nowrap rotate-[-4deg] rounded-md border-2 border-ink bg-accent px-1.5 py-0.5 font-cond text-[11px] font-bold uppercase tracking-[0.1em] text-paper transition-transform group-hover:rotate-3">
+              AI / ML
+            </span>
           </a>
 
           {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-7">
+          <div className="hidden md:flex items-center gap-4 lg:gap-7">
             {navLinks.map((link) => (
               <Link
                 key={link.label}
                 href={link.href}
                 onClick={(e) => handleNavClick(e, link.href)}
-                className="text-sm font-medium text-[#6b7280] hover:text-[#111111] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111111] rounded px-1"
+                className="font-cond text-[17px] font-bold uppercase tracking-[0.08em] text-ink/70 hover:text-accent transition-colors duration-200 rounded px-1"
               >
                 {link.label}
               </Link>
@@ -98,22 +101,22 @@ export default function Navbar() {
               href={profile.resume}
               onClick={() => setMobileOpen(false)}
               aria-label="View Resume"
-              className="inline-flex items-center gap-1.5 text-sm font-medium text-[#6b7280] hover:text-[#111111] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111111] rounded px-1"
+              className="btn-stk !gap-1.5 !px-3 !py-2 !text-[15px] !shadow-[3px_3px_0_var(--ink)]"
             >
-              <FileText size={14} aria-hidden="true" />
+              <FileText size={15} aria-hidden="true" />
               Resume
             </Link>
           </div>
 
 
           {/* Desktop Social Icons */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden lg:flex items-center gap-3">
             <a
               href={profile.social.github}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="GitHub profile (opens in new tab)"
-              className="text-[#6b7280] hover:text-[#111111] transition-colors duration-200 p-1.5 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111111]"
+              className="grid h-9 w-9 place-items-center rounded-lg border-2 border-ink bg-card text-ink shadow-[2px_2px_0_var(--ink)] transition-transform hover:-translate-y-0.5"
             >
               <GitBranch size={17} aria-hidden="true" />
             </a>
@@ -122,7 +125,7 @@ export default function Navbar() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="LinkedIn profile (opens in new tab)"
-              className="text-[#6b7280] hover:text-[#111111] transition-colors duration-200 p-1.5 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111111]"
+              className="grid h-9 w-9 place-items-center rounded-lg border-2 border-ink bg-card text-ink shadow-[2px_2px_0_var(--ink)] transition-transform hover:-translate-y-0.5"
             >
               <LinkedinIcon />
             </a>
@@ -131,7 +134,7 @@ export default function Navbar() {
           {/* Mobile menu button */}
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="md:hidden text-[#111111] p-2 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111111]"
+            className="md:hidden text-ink p-2 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111111]"
             aria-expanded={mobileOpen}
             aria-controls="mobile-menu"
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
@@ -150,7 +153,7 @@ export default function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="fixed top-14 left-0 right-0 z-40 bg-white border-b border-[#e5e7eb] shadow-lg md:hidden"
+            className="fixed top-16 left-0 right-0 z-40 bg-paper border-b-[2.5px] border-ink md:hidden"
             role="navigation"
             aria-label="Mobile navigation"
           >
@@ -165,7 +168,7 @@ export default function Navbar() {
                   <Link
                     href={link.href}
                     onClick={(e) => handleNavClick(e, link.href)}
-                    className="block py-3 text-base font-medium border-b border-[#f3f4f6] text-[#6b7280] hover:text-[#111111] transition-colors"
+                    className="block py-3 font-display text-2xl uppercase border-b-2 border-dashed border-[var(--line)] text-ink hover:text-accent transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -180,7 +183,7 @@ export default function Navbar() {
                 <Link
                   href={profile.resume}
                   onClick={() => setMobileOpen(false)}
-                  className="py-3 text-base font-medium border-b border-[#f3f4f6] text-[#6b7280] hover:text-[#111111] transition-colors flex items-center gap-2"
+                  className="py-3 font-display text-2xl uppercase border-b-2 border-dashed border-[var(--line)] text-ink hover:text-accent transition-colors flex items-center gap-2"
                 >
                   <FileText size={15} aria-hidden="true" />
                   Resume
@@ -193,7 +196,7 @@ export default function Navbar() {
                   href={profile.social.github}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 py-3 px-1 min-h-[44px] text-sm text-[#6b7280] hover:text-[#111111] transition-colors"
+                  className="flex items-center gap-3 py-3 px-1 min-h-[44px] font-cond text-lg font-bold uppercase text-ink/70 hover:text-accent transition-colors"
                 >
                   <GitBranch size={18} aria-hidden="true" /> GitHub
                 </a>
@@ -201,7 +204,7 @@ export default function Navbar() {
                   href={profile.social.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 py-3 px-1 min-h-[44px] text-sm text-[#6b7280] hover:text-[#111111] transition-colors"
+                  className="flex items-center gap-3 py-3 px-1 min-h-[44px] font-cond text-lg font-bold uppercase text-ink/70 hover:text-accent transition-colors"
                 >
                   <LinkedinIcon /> LinkedIn
                 </a>

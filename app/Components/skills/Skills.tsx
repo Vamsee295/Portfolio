@@ -1,150 +1,71 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import { profile } from "../../data/profile";
 import { useViewMode } from "../../context/ViewModeContext";
+import { Marked, Reveal, ease } from "../common/motion";
 
-const categoryColors: Record<string, string> = {
-  Languages: "#2563eb",
-  "AI / ML": "#7c3aed",
-  Development: "#0891b2",
-  Tools: "#059669",
-};
-
-const categoryBg: Record<string, string> = {
-  Languages: "#dbeafe",
-  "AI / ML": "#ede9fe",
-  Development: "#cffafe",
-  Tools: "#d1fae5",
+const NOTES: Record<string, string> = {
+  Languages: "What the systems are written in.",
+  "AI / ML": "The intelligent part of the software.",
+  Development: "How the models become products.",
+  Tools: "What keeps it versioned, shipped and running.",
 };
 
 export default function Skills() {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
-  const { effectiveMode } = useViewMode();
+  const still = useReducedMotion();
+  const mobile = useViewMode().effectiveMode === "mobile";
 
   return (
-    <section
-      id="skills"
-      className="py-24 bg-[#fafafa] border-t border-[#e5e7eb]"
-      aria-labelledby="skills-heading"
-    >
-      <div ref={ref} className="max-w-6xl mx-auto px-6">
-        {/* Eyebrow */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={inView ? { opacity: 1 } : {}}
-          className="text-xs font-mono font-semibold tracking-[0.22em] text-[#2563eb] mb-8 uppercase"
-        >
-          SKILLS
-        </motion.p>
+    <section id="skills" aria-labelledby="skills-heading" className="relative border-y-[2.5px] border-ink bg-paper2 py-28">
+      <div className="mx-auto max-w-[1180px] px-[clamp(18px,4vw,40px)]">
+        <Reveal>
+          <p className="font-mono text-xs tracking-[0.2em] text-[var(--mute)]">05 / SKILLS</p>
+          <h2 id="skills-heading" className="mt-3 font-display text-[clamp(2.8rem,6.5vw,5.6rem)] uppercase leading-[0.95] text-ink">
+            What&rsquo;s in the <Marked>toolkit</Marked>
+          </h2>
+        </Reveal>
 
-        <motion.h2
-          id="skills-heading"
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-4xl lg:text-5xl font-black tracking-[-0.03em] text-[#111111] mb-4"
-        >
-          What I Work With
-        </motion.h2>
-
-        <motion.p
-          initial={{ opacity: 0, y: 16 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.55, delay: 0.2 }}
-          className="text-base text-[#6b7280] mb-14 max-w-lg"
-        >
-          Technologies and tools I use across my projects.
-        </motion.p>
-
-        {/* Mobile: compact pill groups */}
-        {effectiveMode === "mobile" ? (
-          <div className="flex flex-col gap-6">
-            {Object.entries(profile.skills).map(([category, skills], i) => (
-              <motion.div
-                key={category}
-                initial={{ opacity: 0, y: 20 }}
-                animate={inView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.5, delay: 0.1 + i * 0.06 }}
-              >
-                <div
-                  className="inline-flex items-center px-2.5 py-1 rounded-lg mb-3"
-                  style={{ background: categoryBg[category] }}
-                >
-                  <span
-                    className="text-[10px] font-mono font-bold tracking-[0.15em] uppercase"
-                    style={{ color: categoryColors[category] }}
-                  >
-                    {category}
-                  </span>
+        <ol className={`mt-16 grid gap-x-16 gap-y-12 ${mobile ? "" : "md:grid-cols-[repeat(2,minmax(0,1fr))]"}`}>
+          {Object.entries(profile.skills).map(([category, skills], i) => (
+            <motion.li
+              key={category}
+              className="grid grid-cols-[56px_minmax(0,1fr)] gap-3 sm:grid-cols-[72px_minmax(0,1fr)] sm:gap-4"
+              initial={still ? false : { opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.4 }}
+              transition={{ duration: 0.6, delay: (i % 2) * 0.1, ease }}
+            >
+              <span className="font-display text-6xl leading-none text-accent">{String(i + 1).padStart(2, "0")}</span>
+              <div>
+                <div className="flex items-baseline gap-3">
+                  <h3 className="font-display text-3xl uppercase leading-none text-ink">{category}</h3>
+                  <motion.span
+                    aria-hidden
+                    className="h-0 flex-1 origin-left border-b-2 border-dotted border-[var(--mute)]"
+                    initial={still ? false : { scaleX: 0 }}
+                    whileInView={{ scaleX: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.7, delay: 0.2 + (i % 2) * 0.1, ease }}
+                  />
+                  <span className="font-mono text-xs text-[var(--mute)]">{skills.length}</span>
                 </div>
-                <div className="flex flex-wrap gap-2">
-                  {(skills as string[]).map((skill: string) => (
-                    <span
+                <p className="mt-2 text-[var(--body)]">{NOTES[category]}</p>
+                <ul className="mt-4 flex flex-wrap gap-2">
+                  {skills.map((skill) => (
+                    <li
                       key={skill}
-                      className="text-xs font-medium text-[#374151] bg-white border border-[#e5e7eb] px-3 py-1.5 rounded-full"
+                      className="rounded-lg border-2 border-ink bg-card px-3 py-1.5 font-cond text-base font-bold uppercase tracking-[0.06em] text-ink shadow-[2px_3px_0_var(--ink)] transition-transform hover:-translate-y-0.5 hover:-rotate-2"
                     >
                       {skill}
-                    </span>
+                    </li>
                   ))}
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        ) : (
-          /* Desktop: 4-column cards */
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {Object.entries(profile.skills).map(([category, skills], i) => (
-              <motion.div
-                key={category}
-                initial={{ opacity: 0, y: 28 }}
-                animate={inView ? { opacity: 1, y: 0 } : {}}
-                transition={{
-                  duration: 0.6,
-                  delay: 0.1 + i * 0.08,
-                  ease: "easeOut",
-                }}
-                className="bg-white border border-[#e5e7eb] rounded-2xl p-6 hover:shadow-lg hover:border-[#d1d5db] transition-all duration-300"
-              >
-                {/* Category header */}
-                <div className="mb-5">
-                  <div
-                    className="inline-flex items-center px-2.5 py-1 rounded-lg mb-3"
-                    style={{ background: categoryBg[category] }}
-                  >
-                    <span
-                      className="text-[10px] font-mono font-bold tracking-[0.15em] uppercase"
-                      style={{ color: categoryColors[category] }}
-                    >
-                      {category}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Skills list */}
-                <div className="flex flex-col gap-2">
-                  {(skills as string[]).map((skill: string) => (
-                    <div key={skill} className="flex items-center gap-2.5 group">
-                      <div
-                        className="w-1.5 h-1.5 rounded-full flex-shrink-0 transition-all duration-200 group-hover:scale-125"
-                        style={{ background: categoryColors[category] }}
-                        aria-hidden="true"
-                      />
-                      <span className="text-sm font-medium text-[#374151]">
-                        {skill}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        )}
+                </ul>
+              </div>
+            </motion.li>
+          ))}
+        </ol>
       </div>
     </section>
   );
 }
-
-

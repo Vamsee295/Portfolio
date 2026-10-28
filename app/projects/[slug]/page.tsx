@@ -2,6 +2,8 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { caseStudies } from "../../data/caseStudies";
 
+import Navbar from "../../Components/navbar/Navbar";
+import Footer from "../../Components/footer/Footer";
 import ReadingProgress from "../../Components/case-study/ReadingProgress";
 import CaseStudyHero from "../../Components/case-study/CaseStudyHero";
 import ProjectSnapshot from "../../Components/case-study/ProjectSnapshot";
@@ -47,7 +49,9 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
   const nextStudy = caseStudies[study.nextSlug];
 
   return (
-    <main className="min-h-screen bg-[#fafafa]">
+    <>
+    <Navbar />
+    <main className="min-h-screen">
       <ReadingProgress />
       
       <CaseStudyHero study={study} />
@@ -72,5 +76,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
         nextTitle={nextStudy?.title || "Next"} 
       />
     </main>
+    <Footer />
+    </>
   );
 }

@@ -45,7 +45,7 @@ export default function ResumeViewer() {
   }
 
   return (
-    <main className="min-h-screen bg-[#fafafa]">
+    <main className="min-h-screen">
       {/* ── Header ──────────────────────────────────────────────────────────── */}
       <section className="pt-28 pb-10 px-6 max-w-5xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8" ref={headerRef}>
@@ -59,7 +59,7 @@ export default function ResumeViewer() {
             >
               <Link
                 href="/"
-                className="inline-flex items-center gap-2 text-[11px] font-mono font-semibold tracking-[0.18em] text-[#9ca3af] hover:text-[#111111] transition-colors uppercase"
+                className="inline-flex items-center gap-2 text-[11px] font-mono font-semibold tracking-[0.18em] text-[#8C8178] hover:text-[#191614] transition-colors uppercase"
               >
                 <ArrowLeft size={12} />
                 Back to Portfolio
@@ -70,16 +70,16 @@ export default function ResumeViewer() {
               initial={{ opacity: 0, y: 20 }}
               animate={headerInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
-              className="text-4xl lg:text-5xl font-black tracking-[-0.04em] text-[#111111] mb-4 uppercase"
+              className="mb-4 font-display text-[clamp(4rem,12vw,8rem)] uppercase leading-[0.85] text-ink"
             >
-              RESUME.
+              Resume<span className="text-accent">.</span>
             </motion.h1>
 
             <motion.p
               initial={{ opacity: 0, y: 16 }}
               animate={headerInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-base text-[#6b7280] max-w-md leading-relaxed"
+              className="text-base text-[#6B615A] max-w-md leading-relaxed"
             >
               View my current experience, projects, skills, and certifications.
             </motion.p>
@@ -97,7 +97,7 @@ export default function ResumeViewer() {
               href={pdfUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg border border-[#e5e7eb] bg-white text-[#374151] font-semibold text-sm hover:border-[#111111] hover:text-[#111111] transition-all duration-200"
+              className="btn-stk w-full justify-center whitespace-nowrap !bg-card !text-ink sm:w-auto"
             >
               Open PDF
               <ExternalLink size={16} />
@@ -107,7 +107,7 @@ export default function ResumeViewer() {
             <a
               href={pdfUrl}
               download="Vamsee_Krishna_Vemulapalli_Resume.pdf"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg bg-[#111111] text-white font-semibold text-sm hover:bg-[#000000] hover:shadow-lg hover:-translate-y-[1px] transition-all duration-200"
+              className="btn-stk w-full justify-center whitespace-nowrap sm:w-auto"
             >
               <Download size={16} />
               Download Resume
@@ -130,23 +130,23 @@ export default function ResumeViewer() {
             onLoadSuccess={onDocumentLoadSuccess}
             loading={
               <div className="flex flex-col items-center justify-center h-64 w-full">
-                <Loader2 className="animate-spin text-[#9ca3af] mb-4" size={32} />
-                <p className="text-sm font-mono text-[#6b7280]">Loading document...</p>
+                <Loader2 className="animate-spin text-[#8C8178] mb-4" size={32} />
+                <p className="text-sm font-mono text-[#6B615A]">Loading document...</p>
               </div>
             }
             error={
-              <div className="flex flex-col items-center justify-center p-12 text-center border border-[#e5e7eb] bg-white rounded-xl w-full">
-                <p className="text-lg font-bold text-[#111111] mb-2">
+              <div className="flex flex-col items-center justify-center p-12 text-center border-2 border-ink bg-card rounded-xl w-full shadow-[4px_5px_0_var(--ink)]">
+                <p className="text-lg font-bold text-[#191614] mb-2">
                   Resume preview is currently unavailable.
                 </p>
-                <p className="text-sm text-[#6b7280] mb-6">
+                <p className="text-sm text-[#6B615A] mb-6">
                   Please download or open the PDF directly.
                 </p>
                 <a
                   href={pdfUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#111111] text-white font-semibold text-sm"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#191614] text-paper font-semibold text-sm"
                 >
                   <ExternalLink size={16} />
                   Open Resume PDF
@@ -158,7 +158,7 @@ export default function ResumeViewer() {
             {Array.from(new Array(numPages), (el, index) => (
               <div
                 key={`page_${index + 1}`}
-                className="bg-white mx-auto rounded-sm overflow-hidden"
+                className="bg-card mx-auto rounded-sm overflow-hidden"
                 style={{
                   boxShadow: "0 10px 40px -10px rgba(0,0,0,0.1), 0 0 1px rgba(0,0,0,0.1)"
                 }}

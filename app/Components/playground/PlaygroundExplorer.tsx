@@ -1,127 +1,78 @@
 "use client";
 
-import { useState, useMemo, useRef } from "react";
-import { motion, useInView, AnimatePresence, useReducedMotion } from "framer-motion";
+import { useState, useMemo } from "react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import Link from "next/link";
-import { ArrowLeft, Search, GitBranch } from "lucide-react";
+import { ArrowLeft, GitBranch } from "lucide-react";
 import { projects, Project, LabCategory } from "../../data/projects";
+import { CountUp, ease } from "../common/motion";
 
 // ─── Categories ───────────────────────────────────────────────────────────────
 const labCategories: { key: LabCategory; label: string }[] = [
-  { key: "All", label: "ALL" },
-  { key: "AI / Agents", label: "AI / AGENTS" },
-  { key: "Machine Learning", label: "MACHINE LEARNING" },
-  { key: "Computer Vision", label: "COMPUTER VISION" },
-  { key: "Data Science", label: "DATA SCIENCE" },
-  { key: "Web", label: "WEB" },
-  { key: "Mobile", label: "MOBILE" },
-  { key: "Developer Tools", label: "DEVELOPER TOOLS" },
-  { key: "Automation", label: "AUTOMATION" },
-  { key: "Academic", label: "ACADEMIC" },
-  { key: "Experiments", label: "EXPERIMENTS" },
+  { key: "All", label: "All" },
+  { key: "AI / Agents", label: "AI / Agents" },
+  { key: "Machine Learning", label: "Machine learning" },
+  { key: "Computer Vision", label: "Computer vision" },
+  { key: "Data Science", label: "Data science" },
+  { key: "Web", label: "Web" },
+  { key: "Mobile", label: "Mobile" },
+  { key: "Developer Tools", label: "Developer tools" },
+  { key: "Automation", label: "Automation" },
+  { key: "Academic", label: "Academic" },
+  { key: "Experiments", label: "Experiments" },
 ];
 
 // ─── Individual Build Card ────────────────────────────────────────────────────
-function BuildCard({
-  item,
-  index,
-}: {
-  item: Project;
-  index: number;
-}) {
-  const ref = useRef<HTMLDivElement>(null);
-  // Reusing the exact architecture from main portfolio ProjectCard.tsx
-  const inView = useInView(ref, { once: true, margin: "-80px" });
-  const shouldReduceMotion = useReducedMotion();
-
-  const isPersonalAI = item.status === "IN DEVELOPMENT";
-
-  // Base and Hover styles (using motion-safe for reduced motion compatibility)
-  const baseCardStyle = "group relative bg-white flex flex-col justify-between h-full will-change-transform";
-  const hoverClasses = "transition-all duration-400 ease-out motion-safe:hover:-translate-y-1 motion-safe:hover:shadow-xl hover:shadow-[rgba(0,0,0,0.06)]";
-  
-  // ALL cards use the strong dark-border treatment
-  const cardStyle = "border-2 border-[#111111] rounded-2xl p-7 lg:p-8";
-
-  // Reusing ProjectCard.tsx animation values
-  const initialY = shouldReduceMotion ? 0 : 40;
-  const initialScale = 1;
-  const delay = shouldReduceMotion ? 0 : (index % 3) * 0.12;
-  const duration = 0.7;
+function BuildCard({ item, index }: { item: Project; index: number }) {
+  const still = useReducedMotion();
+  const inDev = item.status === "IN DEVELOPMENT";
 
   return (
-    <motion.div
-      ref={ref}
+    <motion.article
       layout
-      initial={{ opacity: 0, y: initialY, scale: initialScale }}
-      animate={inView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: initialY, scale: initialScale }}
-      exit={{ opacity: 0, scale: 0.97, transition: { duration: 0.2 } }}
-      transition={{ 
-        duration: duration, 
-        delay: delay, 
-        ease: "easeOut",
-        layout: { duration: 0.3 }
-      }}
-      className={`${baseCardStyle} ${cardStyle} ${hoverClasses}`}
+      initial={still ? false : { opacity: 0, y: 36 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.15 }}
+      exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.18 } }}
+      transition={{ duration: 0.6, delay: still ? 0 : (index % 3) * 0.08, ease, layout: { duration: 0.3 } }}
+      className="stk group flex h-full flex-col justify-between p-7 transition-[transform,box-shadow] duration-200 hover:-translate-x-[3px] hover:-translate-y-[3px] hover:shadow-[8px_9px_0_var(--ink)]"
     >
       <div>
-        {/* Top row */}
-        <div className="flex items-start justify-between mb-4 gap-2">
-          <span className="font-mono font-semibold uppercase text-[#9ca3af] group-hover:text-[#111111] transition-colors duration-300 text-[10px] tracking-[0.16em]">
-            {item.category}
-          </span>
-          {isPersonalAI && (
-            <motion.span 
-              initial={{ opacity: 0, x: shouldReduceMotion ? 0 : -5 }}
-              animate={inView ? { opacity: 1, x: 0 } : {}}
-              transition={{ duration: 0.5, delay: delay + 0.3 }}
-              className="shrink-0 inline-block bg-[#fefce8] text-[#854d0e] border border-[#fef08a] px-2 py-0.5 rounded text-[9px] font-mono font-bold tracking-widest uppercase"
-            >
-              IN DEVELOPMENT
-            </motion.span>
+        <div className="flex items-start justify-between gap-3">
+          <span className="font-cond text-sm font-bold uppercase tracking-[0.1em] text-[var(--mute)] group-hover:text-accent">{item.category}</span>
+          {inDev && (
+            <span className="shrink-0 rotate-3 rounded-md border-2 border-ink bg-gold px-2 py-0.5 font-cond text-xs font-bold uppercase tracking-[0.1em] text-ink">
+              In development
+            </span>
           )}
         </div>
-
-        {/* Title */}
-        <h3 className="text-2xl font-black tracking-tight text-[#111111] mb-3 leading-snug group-hover:text-[#000000] transition-colors duration-300">
-          {item.title}
-        </h3>
-
-        {/* Description */}
-        <p className="text-sm text-[#6b7280] leading-relaxed mb-6">
-          {item.description}
-        </p>
-
-        {/* Tech tags */}
+        <h3 className="mt-4 font-display text-[1.9rem] uppercase leading-[0.95] text-ink">{item.title}</h3>
+        <p className="mt-3 leading-relaxed text-[var(--body)]">{item.description}</p>
         {item.technologies && item.technologies.length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-6">
+          <ul className="mt-5 flex flex-wrap gap-2">
             {item.technologies.map((tech) => (
-              <span
-                key={tech}
-                className="text-[10px] font-mono font-medium text-[#6b7280] bg-[#f8fafc] border border-[#e5e7eb] px-2 py-1 rounded-full"
-              >
+              <li key={tech} className="rounded-lg border-2 border-ink bg-paper px-2.5 py-1 font-mono text-xs text-ink">
                 {tech}
-              </span>
+              </li>
             ))}
-          </div>
+          </ul>
         )}
       </div>
 
-      {/* Source links */}
       {item.githubUrl && (
-        <div className={`flex flex-wrap gap-2 pt-4 border-t border-[#e5e7eb] mt-auto`}>
+        <div className="mt-6 border-t-2 border-dashed border-[var(--line)] pt-5">
           <a
             href={item.githubUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="group/btn inline-flex items-center gap-2 text-sm font-semibold text-[#6b7280] hover:text-[#111111] transition-colors duration-200 focus-visible:outline-none rounded"
+            className="inline-flex items-center gap-2 font-cond text-base font-bold uppercase tracking-[0.1em] text-ink underline decoration-accent decoration-2 underline-offset-4 hover:text-accent"
+            aria-label={`View ${item.title} on GitHub`}
           >
-            View on GitHub
-            <GitBranch size={14} className="group-hover/btn:translate-x-1 transition-transform duration-200" />
+            View on GitHub <GitBranch size={15} aria-hidden />
           </a>
         </div>
       )}
-    </motion.div>
+    </motion.article>
   );
 }
 
@@ -129,23 +80,19 @@ function BuildCard({
 export default function PlaygroundExplorer() {
   const [activeCategory, setActiveCategory] = useState<LabCategory>("All");
   const [searchQuery, setSearchQuery] = useState("");
-  const shouldReduceMotion = useReducedMotion();
-
-  const headerRef = useRef<HTMLDivElement>(null);
-  const headerInView = useInView(headerRef, { once: true });
+  const still = useReducedMotion();
 
   const labProjects = useMemo(() => projects.filter((p) => !p.featured), []);
 
-  // Derived filtered list
+  const counts = useMemo(() => {
+    const c: Partial<Record<LabCategory, number>> = { All: labProjects.length };
+    labProjects.forEach((p) => p.labCategory && (c[p.labCategory] = (c[p.labCategory] ?? 0) + 1));
+    return c;
+  }, [labProjects]);
+
   const filtered = useMemo(() => {
     let items = [...labProjects];
-
-    // Category filter
-    if (activeCategory !== "All") {
-      items = items.filter((item) => item.labCategory === activeCategory);
-    }
-
-    // Search filter
+    if (activeCategory !== "All") items = items.filter((item) => item.labCategory === activeCategory);
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       items = items.filter(
@@ -156,153 +103,118 @@ export default function PlaygroundExplorer() {
           item.category.toLowerCase().includes(q)
       );
     }
-
-    // We DO NOT sort here to preserve the explicit Tier ordering from projects.ts.
+    // No sort: keep the explicit tier ordering from projects.ts.
     return items;
   }, [activeCategory, searchQuery, labProjects]);
 
+  const rise = (delay: number) => ({
+    initial: still ? false : { opacity: 0, y: 24 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.7, delay, ease },
+  });
+
   return (
-    <main className="min-h-screen bg-white">
+    <main className="relative min-h-screen">
       {/* ── Header ──────────────────────────────────────────────────────────── */}
-      <section className="pt-28 pb-16 px-6 max-w-6xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
-          <div className="lg:col-span-8" ref={headerRef}>
-            <motion.div
-              initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 10 }}
-              animate={headerInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.4 }}
-              className="mb-10"
-            >
-              <Link
-                href="/"
-                className="inline-flex items-center gap-2 text-[11px] font-mono font-semibold tracking-[0.18em] text-[#9ca3af] hover:text-[#111111] transition-colors uppercase"
-              >
-                <ArrowLeft size={12} />
-                Back to Portfolio
-              </Link>
-            </motion.div>
+      <section className="mx-auto max-w-[1180px] px-[clamp(18px,4vw,40px)] pb-14 pt-32">
+        <motion.div {...rise(0)}>
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 font-cond text-sm font-bold uppercase tracking-[0.14em] text-[var(--mute)] hover:text-accent"
+          >
+            <ArrowLeft size={14} aria-hidden /> Back to portfolio
+          </Link>
+        </motion.div>
 
-            <motion.h1
-              initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
-              animate={headerInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0 }}
-              className="text-5xl lg:text-7xl font-black tracking-[-0.04em] text-[#111111] mb-6 leading-none uppercase"
-            >
-              LABS.
-            </motion.h1>
-
-            <motion.p
-              initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
-              animate={headerInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: shouldReduceMotion ? 0 : 0.1 }}
-              className="text-base text-[#6b7280] max-w-xl mb-6 leading-relaxed"
-            >
-              Experiments, prototypes, academic projects, and everything I've built along the way.
+        <div className="mt-8 flex flex-wrap items-end justify-between gap-8">
+          <div>
+            <h1 className="overflow-hidden font-display text-[clamp(5rem,16vw,11rem)] uppercase leading-[0.85] text-ink">
+              <motion.span className="block" initial={still ? false : { y: "100%" }} animate={{ y: 0 }} transition={{ duration: 0.8, ease }}>
+                Labs<span className="text-accent">.</span>
+              </motion.span>
+            </h1>
+            <motion.p {...rise(0.15)} className="mt-5 max-w-xl text-[17px] leading-relaxed text-[var(--body)]">
+              Experiments, prototypes, academic projects, and everything I&rsquo;ve built along the way.
             </motion.p>
-            
-            <motion.div
-              initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
-              animate={headerInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: shouldReduceMotion ? 0 : 0.18 }}
-            >
-              <span className="inline-block bg-[#f3f4f6] text-[#111111] font-mono text-[11px] font-bold tracking-widest uppercase px-3 py-1 rounded">
-                {labProjects.length} PROJECTS
-              </span>
-            </motion.div>
+            <motion.p {...rise(0.25)} className="mt-3 -rotate-1 font-hand text-2xl text-[var(--teal)]">
+              everything that didn&rsquo;t make the front page ↓
+            </motion.p>
           </div>
+
+          <motion.div
+            initial={still ? false : { scale: 0, rotate: -30 }}
+            animate={{ scale: 1, rotate: 4 }}
+            transition={{ delay: 0.35, type: "spring", stiffness: 300, damping: 15 }}
+            className="rounded-2xl border-[2.5px] border-ink bg-gold px-6 py-4 text-ink shadow-[4px_5px_0_var(--ink)]"
+          >
+            <p className="font-display text-6xl leading-none">
+              <CountUp to={labProjects.length} />
+            </p>
+            <p className="font-cond text-sm font-bold uppercase tracking-[0.12em]">builds in the lab</p>
+          </motion.div>
         </div>
       </section>
 
       {/* ── Controls ────────────────────────────────────────────────────────── */}
-      <div className="sticky top-14 z-30 bg-white border-b border-[#f3f4f6] shadow-[0_1px_0_rgba(0,0,0,0.04)]">
-        <div className="max-w-6xl mx-auto px-6 py-4">
-          <div className="flex flex-col lg:flex-row gap-4 items-start justify-between">
-            {/* Search */}
-            <motion.div 
-              initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: shouldReduceMotion ? 0 : 0.25 }}
-              className="relative w-full lg:w-96 shrink-0"
-            >
-              <Search
-                size={14}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9ca3af]"
-              />
-              <input
-                type="text"
-                placeholder="Search projects..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="
-                  w-full pl-9 pr-4 py-2.5
-                  text-sm text-[#111111] placeholder-[#9ca3af]
-                  bg-[#f9fafb] border border-[#e5e7eb] rounded-md
-                  focus:outline-none focus:border-[#111111] focus:bg-white
-                  transition-all duration-200 font-mono
-                "
-              />
-            </motion.div>
-            
-            {/* Filter Tabs container - allows horizontal scrolling if needed on mobile */}
-            <motion.div 
-              initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: shouldReduceMotion ? 0 : 0.32 }}
-              className="w-full overflow-x-auto pb-1 scrollbar-hide"
-            >
-              <div className="flex gap-2">
-                {labCategories.map(({ key, label }) => {
+      <div className="sticky top-16 z-30 border-y-[2.5px] border-ink bg-paper/90 backdrop-blur-md">
+        <div className="mx-auto flex max-w-[1180px] flex-col gap-4 px-[clamp(18px,4vw,40px)] py-4 lg:flex-row lg:items-center">
+          <label className="flex w-full shrink-0 items-center gap-3 rounded-xl border-[2.5px] border-ink bg-card px-4 py-2.5 shadow-[3px_4px_0_var(--ink)] focus-within:shadow-[3px_4px_0_var(--accent)] lg:w-80">
+            <span className="font-mono text-accent" aria-hidden>&gt;</span>
+            <input
+              type="search"
+              placeholder="search the lab…"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              aria-label="Search projects"
+              className="w-full bg-transparent font-mono text-sm text-ink placeholder:text-[var(--mute)] focus:outline-none"
+            />
+          </label>
+
+          <div className="w-full overflow-x-auto pb-2 pt-1 scrollbar-hide" role="tablist" aria-label="Filter by category">
+            <div className="flex gap-2 pr-2">
+              {labCategories
+                .filter(({ key }) => counts[key])
+                .map(({ key, label }) => {
                   const isActive = activeCategory === key;
                   return (
                     <button
                       key={key}
+                      role="tab"
+                      aria-selected={isActive}
                       onClick={() => setActiveCategory(key)}
-                      className={`
-                        shrink-0 inline-flex items-center gap-1.5
-                        text-[10px] font-mono font-semibold tracking-[0.14em]
-                        px-3 py-1.5 rounded-full border
-                        transition-all duration-200
-                        ${
-                          isActive
-                            ? "bg-[#111111] text-white border-[#111111]"
-                            : "bg-transparent text-[#6b7280] border-[#e5e7eb] hover:border-[#111111] hover:text-[#111111]"
-                        }
-                      `}
+                      className={`inline-flex shrink-0 items-center gap-2 rounded-lg border-2 border-ink px-3 py-1.5 font-cond text-sm font-bold uppercase tracking-[0.08em] transition-[transform,box-shadow,background-color] duration-150 ${
+                        isActive
+                          ? "translate-x-[2px] translate-y-[2px] bg-accent text-paper shadow-none"
+                          : "bg-card text-ink shadow-[2px_2px_0_var(--ink)] hover:-translate-y-0.5"
+                      }`}
                     >
                       {label}
+                      <span className={`font-mono text-[11px] ${isActive ? "text-paper/80" : "text-[var(--mute)]"}`}>{counts[key]}</span>
                     </button>
                   );
                 })}
-              </div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </div>
 
       {/* ── Grid ────────────────────────────────────────────────────────────── */}
-      <section className="max-w-6xl mx-auto px-6 py-12">
-        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 items-start">
+      <section className="mx-auto max-w-[1180px] px-[clamp(18px,4vw,40px)] py-14">
+        <motion.div layout className="grid grid-cols-1 items-stretch gap-7 md:grid-cols-2 lg:grid-cols-3">
           <AnimatePresence mode="popLayout">
             {filtered.length > 0 ? (
-              filtered.map((item, index) => (
-                <BuildCard key={item.id} item={item} index={index} />
-              ))
+              filtered.map((item, index) => <BuildCard key={item.id} item={item} index={index} />)
             ) : (
               <motion.div
                 key="empty"
                 layout
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.3 }}
+                exit={{ opacity: 0 }}
                 className="col-span-full py-24 text-center"
               >
-                <p className="text-4xl font-black tracking-[-0.03em] text-[#e5e7eb] mb-3">
-                  NOTHING HERE.
-                </p>
-                <p className="text-sm font-mono text-[#9ca3af]">
-                  Try a different search or category.
-                </p>
+                <p className="font-display text-6xl uppercase text-ink/15">Nothing here.</p>
+                <p className="mt-3 font-hand text-2xl text-[var(--teal)]">try a different search or category</p>
               </motion.div>
             )}
           </AnimatePresence>

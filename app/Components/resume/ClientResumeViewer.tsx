@@ -9,9 +9,9 @@ import { Loader2 } from "lucide-react";
 const ResumeViewer = dynamic(() => import("./ResumeViewer"), {
   ssr: false,
   loading: () => (
-    <div className="min-h-screen bg-[#fafafa] flex flex-col items-center justify-center">
-      <Loader2 className="animate-spin text-[#9ca3af] mb-4" size={32} />
-      <p className="text-sm font-mono text-[#6b7280]">Loading viewer...</p>
+    <div className="min-h-screen bg-card flex flex-col items-center justify-center">
+      <Loader2 className="animate-spin text-[#8C8178] mb-4" size={32} />
+      <p className="text-sm font-mono text-[#6B615A]">Loading viewer...</p>
     </div>
   ),
 });

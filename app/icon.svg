@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <!-- Hard offset shadow for tactile sticker effect -->
+  <rect x="14" y="14" width="104" height="104" rx="26" fill="#191614" />
+  <!-- Main sticker surface in signature terracotta accent -->
+  <rect x="8" y="8" width="104" height="104" rx="26" fill="#C8603A" stroke="#191614" stroke-width="6" />
+  <!-- Bold geometric "V" letterform in paper cream -->
+  <path d="M33 32 L50 32 L60 74 L70 32 L87 32 L68 96 L52 96 Z" fill="#F5EFE6" />
+  <!-- Tactile gold accent dot -->
+  <circle cx="89" cy="31" r="5.5" fill="#E8A838" stroke="#191614" stroke-width="2.5" />
+</svg>

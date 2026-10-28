@@ -1,253 +1,164 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, FileText } from "lucide-react";
-import dynamic from "next/dynamic";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { profile } from "../../data/profile";
 import { useViewMode } from "../../context/ViewModeContext";
+import ProjectDeck from "./ProjectDeck";
 
-// Lazy-load the canvas to avoid SSR issues
-const SystemVisual = dynamic(() => import("./SystemVisual"), { ssr: false });
+const ease = [0.6, 0, 0.3, 1] as const;
 
-const containerVariants = {
-  hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.12, delayChildren: 0.2 },
-  },
-};
+// Each prompt types out, then the chip names the project that answers it.
+const PROMPTS = [
+  { text: "predict which students might drop out", chip: "EduRisk", color: "var(--accent)" },
+  { text: "route a support ticket across 3 agents", chip: "Multi-Agent AI", color: "var(--teal)" },
+  { text: "build a learning platform for coders", chip: "StudyHub", color: "var(--ink)" },
+  { text: "forecast next quarter's sales", chip: "Labs", color: "var(--accent-d)" },
+];
 
-const itemVariants = {
-  hidden: { opacity: 0, y: 28 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.65, ease: "easeOut" as const },
-  },
-};
+const scrollToWork = () => document.querySelector("#work")?.scrollIntoView({ behavior: "smooth" });
 
-export default function Hero() {
-  const { effectiveMode } = useViewMode();
+function PromptBar() {
+  const still = useReducedMotion();
+  const [idx, setIdx] = useState(0);
+  const [typed, setTyped] = useState(still ? PROMPTS[0].text : "");
+  const full = PROMPTS[idx].text;
+  const done = typed === full;
 
-  const scrollToWork = () => {
-    document.querySelector("#work")?.scrollIntoView({ behavior: "smooth" });
-  };
+  useEffect(() => {
+    if (still) return;
+    const t = done
+      ? window.setTimeout(() => {
+          setTyped("");
+          setIdx((i) => (i + 1) % PROMPTS.length);
+        }, 2200)
+      : window.setTimeout(() => setTyped(full.slice(0, typed.length + 1)), 30 + Math.random() * 45);
+    return () => window.clearTimeout(t);
+  }, [typed, full, done, still]);
 
   return (
-    <section
-      id="hero"
-      className="relative min-h-screen flex items-center overflow-hidden pt-16"
-      aria-label="Hero section"
-    >
-      {/* Background texture */}
-      <div
-        className="absolute inset-0 opacity-[0.025] pointer-events-none"
-        style={{
-          backgroundImage:
-            "radial-gradient(circle, #2563eb 1px, transparent 1px)",
-          backgroundSize: "40px 40px",
-        }}
-        aria-hidden="true"
-      />
+    <div className="stk flex items-center gap-3 px-4 py-3 sm:px-5">
+      <span className="font-mono text-[var(--accent)]">&gt;</span>
+      <p className="min-w-0 flex-1 truncate font-mono text-sm text-ink sm:text-[15px]" aria-live="off">
+        {typed}
+        <span className="caret ml-0.5 inline-block h-[1.05em] w-[0.5em] translate-y-[3px] bg-[var(--accent)]" />
+      </p>
+      <motion.button
+        key={idx + String(done)}
+        onClick={scrollToWork}
+        initial={{ scale: done ? 0.7 : 1, opacity: done ? 0 : 0.35 }}
+        animate={{ scale: 1, opacity: done ? 1 : 0.35 }}
+        transition={{ type: "spring", stiffness: 420, damping: 18 }}
+        style={{ background: PROMPTS[idx].color }}
+        className="shrink-0 rounded-[9px] px-3 py-2 font-cond text-xs font-bold uppercase tracking-[0.1em] text-paper sm:text-sm"
+        aria-label={`See ${PROMPTS[idx].chip}`}
+      >
+        {PROMPTS[idx].chip} ↓
+      </motion.button>
+    </div>
+  );
+}
 
-      <div className="relative z-10 max-w-6xl mx-auto px-6 w-full py-20">
-        {/* Mobile Experience — vertical, compact, thumb-friendly */}
-        {effectiveMode === "mobile" && (
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            className="flex flex-col items-center text-center gap-8 max-w-lg mx-auto py-8"
+function Line({ children, delay, className = "" }: { children: React.ReactNode; delay: number; className?: string }) {
+  return (
+    <span className={`block overflow-hidden pb-1 ${className}`}>
+      <motion.span className="block" initial={{ y: "105%" }} animate={{ y: 0 }} transition={{ duration: 0.8, delay, ease }}>
+        {children}
+      </motion.span>
+    </span>
+  );
+}
+
+export default function Hero() {
+  const mobile = useViewMode().effectiveMode === "mobile";
+
+  return (
+    <section id="hero" aria-label="Hero section" className="relative flex min-h-screen items-center overflow-hidden pt-24 pb-16">
+      <div className={`relative z-10 mx-auto grid w-full grid-cols-[minmax(0,1fr)] max-w-[1180px] items-center gap-14 px-[clamp(18px,4vw,40px)] ${mobile ? "" : "lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]"}`}>
+        <div>
+          <motion.p
+            className="-rotate-2 font-hand text-[clamp(1.4rem,2.4vw,1.9rem)] text-[var(--teal)]"
+            initial={{ clipPath: "inset(0 100% 0 0)" }}
+            animate={{ clipPath: "inset(0 0% 0 0)" }}
+            transition={{ duration: 0.9, delay: 0.1 }}
           >
-            <motion.p
-              variants={itemVariants}
-              className="text-xs font-mono font-semibold tracking-[0.22em] text-[#2563eb] uppercase"
-            >
-              CS · AI/ML · SOFTWARE
-            </motion.p>
+            hi, i&apos;m vamsee — i turn models into products
+          </motion.p>
 
-            <motion.h1
-              variants={itemVariants}
-              className="text-5xl font-black leading-[1.0] tracking-[-0.04em] text-[#111111]"
-            >
-              I BUILD{" "}
-              <span className="inline-block bg-[#dbeafe] text-[#111111] px-3 py-1 rounded-xl">
-                INTELLIGENT
-              </span>
-              {" "}SOFTWARE.
-            </motion.h1>
-
-            <motion.p
-              variants={itemVariants}
-              className="text-base text-[#6b7280] leading-relaxed"
-            >
-              Computer Science student focused on AI/ML, software engineering,
-              and building practical intelligent systems.
-            </motion.p>
-
-            {/* Mobile CTAs — full-width large touch targets */}
-            <motion.div variants={itemVariants} className="flex flex-col gap-3 w-full">
-              <button
-                onClick={scrollToWork}
-                className="w-full flex items-center justify-center gap-2 bg-[#111111] text-white py-4 rounded-2xl text-sm font-bold hover:bg-[#222222] active:scale-[0.98] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111111]"
-                aria-label="Explore selected projects"
-              >
-                Explore My Work
-                <ArrowRight size={16} aria-hidden="true" />
-              </button>
-
-              <Link
-                href={profile.resume}
-                className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-sm font-bold border border-[#e5e7eb] text-[#6b7280] hover:border-[#111111] hover:text-[#111111] active:scale-[0.98] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111111]"
-                aria-label="View Resume"
-              >
-                <FileText size={16} aria-hidden="true" />
-                View Resume
-              </Link>
-            </motion.div>
-
-            <motion.div
-              variants={itemVariants}
-              className="flex items-center gap-3"
-            >
-              <motion.div
-                animate={{ y: [0, 6, 0] }}
-                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                className="w-5 h-8 border border-[#d1d5db] rounded-full flex items-start justify-center pt-1.5"
-                aria-hidden="true"
-              >
-                <div className="w-1 h-2 bg-[#9ca3af] rounded-full" />
-              </motion.div>
-              <span className="text-xs font-mono text-[#9ca3af] tracking-widest uppercase">scroll</span>
-            </motion.div>
-          </motion.div>
-        )}
-
-        {/* Desktop Experience — two-column, rich visuals */}
-        {effectiveMode === "desktop" && (
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-          {/* Left — Text */}
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            className="flex flex-col"
+          <h1
+            className="mt-2 flex flex-col gap-1.5 sm:gap-2 font-display text-[clamp(3.6rem,9.5vw,8.4rem)] uppercase leading-[0.95] text-ink"
+            aria-label={profile.tagline}
           >
-            {/* Eyebrow */}
-            <motion.p
-              variants={itemVariants}
-              className="text-xs font-mono font-semibold tracking-[0.22em] text-[#2563eb] mb-6 uppercase"
-            >
-              COMPUTER SCIENCE · AI/ML · SOFTWARE
-            </motion.p>
-
-            {/* Main heading */}
-            <motion.h1
-              variants={itemVariants}
-              className="text-5xl sm:text-6xl lg:text-7xl font-black leading-[1.0] tracking-[-0.04em] text-[#111111] mb-6"
-            >
-              I BUILD
-              <br />
-              <span className="inline-block bg-[#dbeafe] text-[#111111] px-4 py-1 my-1 rounded-xl">
-                INTELLIGENT
-              </span>
-              <br />
-              SOFTWARE.
-            </motion.h1>
-
-            {/* Supporting text */}
-            <motion.p
-              variants={itemVariants}
-              className="text-base sm:text-lg text-[#6b7280] leading-relaxed max-w-md mb-10"
-            >
-              Computer Science student focused on AI/ML, software engineering,
-              and building practical intelligent systems that combine models with
-              real-world software.
-            </motion.p>
-
-            {/* CTA Buttons */}
-            <motion.div
-              variants={itemVariants}
-              className="flex flex-wrap gap-4"
-            >
-              <button
-                onClick={scrollToWork}
-                className="group inline-flex items-center gap-2 bg-[#111111] text-white px-6 py-3.5 rounded-full text-sm font-semibold hover:bg-[#222222] transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111111] focus-visible:ring-offset-2"
-                aria-label="Explore selected projects"
-              >
-                Explore My Work
-                <ArrowRight
-                  size={16}
-                  className="group-hover:translate-x-1 transition-transform duration-200"
-                  aria-hidden="true"
+            <Line delay={0.15}>I build</Line>
+            <Line delay={0.27} className="-mx-[0.2em] px-[0.2em] py-[0.14em]">
+              <span className="relative inline-block">
+                <motion.span
+                  aria-hidden
+                  className="absolute -inset-x-[0.14em] -inset-y-[0.07em] origin-left -rotate-1 rounded-lg bg-accent"
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: 1 }}
+                  transition={{ duration: 0.55, delay: 0.85, ease }}
                 />
-              </button>
-
-              <Link
-                href={profile.resume}
-                className="group inline-flex items-center gap-2 bg-transparent text-[#6b7280] px-6 py-3.5 rounded-full text-sm font-semibold border border-[#e5e7eb] hover:border-[#111111] hover:text-[#111111] hover:bg-[#f8fafc] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111111] focus-visible:ring-offset-2"
-                aria-label="View Resume"
-              >
-                <FileText size={16} aria-hidden="true" />
-                View Resume
-                <ArrowRight
-                  size={14}
-                  className="group-hover:translate-x-1 transition-transform duration-200"
-                  aria-hidden="true"
-                />
-              </Link>
-            </motion.div>
-
-            {/* Scroll indicator */}
-            <motion.div
-              variants={itemVariants}
-              className="mt-16 flex items-center gap-3"
-            >
-              <motion.div
-                animate={{ y: [0, 6, 0] }}
-                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                className="w-5 h-8 border border-[#d1d5db] rounded-full flex items-start justify-center pt-1.5"
-                aria-hidden="true"
-              >
-                <div className="w-1 h-2 bg-[#9ca3af] rounded-full" />
-              </motion.div>
-              <span className="text-xs font-mono text-[#9ca3af] tracking-widest uppercase">
-                scroll
+                <span className="relative text-paper">intelligent</span>
               </span>
-            </motion.div>
-          </motion.div>
+            </Line>
+            <Line delay={0.39}>software.</Line>
+          </h1>
 
-          {/* Right — Interactive AI System Visual */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.0, delay: 0.45, ease: "easeOut" }}
-            className="relative hidden lg:flex items-center justify-center"
-            aria-hidden="true"
+          <motion.p
+            className="mt-6 max-w-[34rem] text-[17px] leading-relaxed text-[var(--body)]"
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
           >
-            {/* Outer container — ~42% of hero width, square */}
-            <div className="relative w-full max-w-[520px] aspect-square">
-              {/* Very faint outer border ring */}
-              <div className="absolute inset-0 rounded-full border border-[#e5e7eb] opacity-30 pointer-events-none" />
+            {profile.bio}
+          </motion.p>
 
-              {/* Canvas fills the full space — it draws its own rings */}
-              <div className="absolute inset-0">
-                <SystemVisual />
-              </div>
-
-              {/* Activity state label — bottom center, changes with animation */}
-              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 pointer-events-none">
-                <span className="text-[9px] font-mono font-semibold tracking-[0.2em] text-[#111111] opacity-40 uppercase">
-                  LIVE SYSTEM
-                </span>
-              </div>
-            </div>
+          <motion.div className="mt-8 max-w-[38rem]" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.75 }}>
+            <PromptBar />
           </motion.div>
-          </div>
-        )}
+
+          <motion.div className="mt-8 flex flex-wrap items-center gap-4" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.9 }}>
+            <button onClick={scrollToWork} className="btn-stk" aria-label="Explore selected projects">
+              Explore my work <ArrowRight size={18} aria-hidden />
+            </button>
+            <Link
+              href={profile.resume}
+              className="btn-stk !bg-card !text-ink"
+              aria-label="View Resume"
+            >
+              <FileText size={18} aria-hidden /> Resume
+            </Link>
+          </motion.div>
+        </div>
+
+        <motion.div
+          className={`relative mx-auto w-[min(92%,440px)] ${mobile ? "" : "lg:mr-0"}`}
+          initial={{ opacity: 0, y: 60, rotate: 8 }}
+          animate={{ opacity: 1, y: 0, rotate: 0 }}
+          transition={{ duration: 0.9, delay: 0.5, ease }}
+        >
+          <ProjectDeck />
+          <motion.span
+            className="absolute -left-3 top-0 z-20 -rotate-6 rounded-2xl rounded-bl-sm border-[2.5px] border-ink bg-card px-4 py-2 font-hand text-xl text-ink shadow-[3px_4px_0_var(--ink)] sm:-left-10 sm:text-2xl"
+            initial={{ scale: 0, rotate: -20 }}
+            animate={{ scale: 1, rotate: -6 }}
+            transition={{ delay: 1.3, type: "spring", stiffness: 380, damping: 14 }}
+          >
+            tap to shuffle →
+          </motion.span>
+          <motion.span
+            className="absolute -right-2 top-[18%] z-20 rotate-6 rounded-lg border-[2.5px] border-ink bg-gold px-3 py-1.5 font-cond text-xs font-bold uppercase tracking-[0.1em] text-ink shadow-[3px_4px_0_var(--ink)] sm:-right-6 sm:text-sm"
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 1.45, type: "spring", stiffness: 380, damping: 14 }}
+          >
+            Open to internships
+          </motion.span>
+        </motion.div>
       </div>
     </section>
   );
 }
-
-

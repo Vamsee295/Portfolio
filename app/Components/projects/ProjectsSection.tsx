@@ -1,124 +1,52 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { projects } from "../../data/projects";
+import { Marked, Reveal } from "../common/motion";
 import ProjectCard from "./ProjectCard";
 
 export default function ProjectsSection() {
-  const ref = useRef<HTMLHeadingElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
-  const ctaRef = useRef<HTMLDivElement>(null);
-  const ctaInView = useInView(ctaRef, { once: true, margin: "-40px" });
-
   return (
-    <section
-      id="work"
-      className="py-24 px-6 max-w-6xl mx-auto"
-      aria-labelledby="projects-heading"
-    >
-      {/* Section header */}
-      <div className="mb-16">
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={inView ? { opacity: 1 } : {}}
-          transition={{ duration: 0.5 }}
-          className="text-xs font-mono font-semibold tracking-[0.22em] text-[#2563eb] mb-4 uppercase"
-        >
-          SELECTED WORK
-        </motion.p>
+    <section id="work" aria-labelledby="projects-heading" className="relative mx-auto max-w-[1180px] px-[clamp(18px,4vw,40px)] py-28">
+      <Reveal className="mb-16 flex flex-wrap items-end justify-between gap-6">
+        <div>
+          <p className="font-mono text-xs tracking-[0.2em] text-[var(--mute)]">01 / SELECTED WORK</p>
+          <h2 id="projects-heading" className="mt-3 font-display text-[clamp(2.8rem,6.5vw,5.6rem)] uppercase leading-[0.95] text-ink">
+            Things I&rsquo;ve <Marked>built</Marked>
+          </h2>
+          <p className="mt-4 max-w-lg text-[17px] leading-relaxed text-[var(--body)]">
+            Intelligent systems, software tools and applications — focused on AI/ML, software engineering and data.
+          </p>
+        </div>
+        <p className="rotate-2 font-hand text-2xl text-[var(--teal)]">the three i&rsquo;m proudest of ↓</p>
+      </Reveal>
 
-        <motion.h2
-          ref={ref}
-          id="projects-heading"
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
-          className="text-4xl lg:text-5xl font-black tracking-[-0.03em] text-[#111111] mb-4"
-        >
-          Things I&rsquo;ve Built
-        </motion.h2>
-
-        <motion.p
-          initial={{ opacity: 0, y: 16 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-base text-[#6b7280] max-w-lg"
-        >
-          A collection of intelligent systems, software tools, and applications
-          I&rsquo;ve built — focused on AI/ML, software engineering, and data.
-        </motion.p>
-      </div>
-
-      {/* Project cards */}
-      <div className="flex flex-col gap-6">
-        {projects.filter(p => p.featured).map((project, i) => (
+      <div className="flex flex-col gap-12">
+        {projects.filter((p) => p.featured).map((project, i) => (
           <ProjectCard key={project.id} project={project} index={i} />
         ))}
       </div>
 
-      {/* Vibe Coding CTA */}
-      <motion.div
-        ref={ctaRef}
-        initial={{ opacity: 0, y: 24 }}
-        animate={ctaInView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.7, delay: 0.15, ease: "easeOut" }}
-        className="mt-10"
-      >
-        <Link href="/playground" className="group block">
-          <div
-            className="
-              border border-[#e5e7eb] rounded-2xl p-8 lg:p-10
-              flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6
-              transition-all duration-300 ease-out
-              hover:border-[#111111] hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)]
-              hover:-translate-y-[2px]
-            "
-          >
-            {/* Left: label + headline + sub */}
-            <div>
-              <p className="text-[10px] font-mono font-semibold tracking-[0.22em] text-[#9ca3af] uppercase mb-3">
-                MORE BUILDS &amp; EXPERIMENTS
-              </p>
-              <h3 className="text-2xl lg:text-3xl font-black tracking-[-0.03em] text-[#111111] mb-2">
-                There&rsquo;s a lot more in the{" "}
-                <span className="bg-[#dbeafe] text-[#111111] px-2 rounded-sm">
-                  lab.
-                </span>
-              </h3>
-              <p className="text-sm text-[#6b7280] max-w-md leading-relaxed">
-                46+ repositories, AI agent prototypes, machine learning models,
-                Jupyter &amp; Colab notebooks, and experiments across data
-                science and software engineering.
-              </p>
-            </div>
-
-            {/* Right: CTA pill */}
-            <div className="flex-shrink-0">
-              <span
-                className="
-                  inline-flex items-center gap-2
-                  border border-[#111111] rounded-full
-                  px-6 py-3
-                  text-sm font-semibold text-[#111111]
-                  transition-all duration-300
-                  group-hover:bg-[#111111] group-hover:text-white
-                "
-              >
-                Explore All Labs
-                <ArrowRight
-                  size={14}
-                  className="transition-transform duration-300 group-hover:translate-x-1"
-                />
-              </span>
-            </div>
+      <Reveal className="mt-16">
+        <Link
+          href="/playground"
+          className="group dots-night relative flex flex-col gap-8 overflow-hidden rounded-2xl border-[2.5px] border-ink bg-night p-8 text-paper shadow-[5px_6px_0_var(--ink)] transition-transform duration-200 hover:-translate-x-0.5 hover:-translate-y-0.5 lg:flex-row lg:items-center lg:justify-between lg:p-12"
+        >
+          <div>
+            <p className="font-mono text-xs tracking-[0.2em] text-paper/50">MORE BUILDS &amp; EXPERIMENTS</p>
+            <h3 className="mt-3 font-display text-[clamp(2rem,4vw,3.4rem)] uppercase leading-none">
+              There&rsquo;s a lot more in the <Marked>lab.</Marked>
+            </h3>
+            <p className="mt-4 max-w-md leading-relaxed text-paper/70">
+              46+ repositories, AI agent prototypes, machine learning models, notebooks and experiments across data science and software engineering.
+            </p>
           </div>
+          <span className="btn-stk shrink-0 !border-paper">
+            Explore all labs <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" aria-hidden />
+          </span>
         </Link>
-      </motion.div>
+      </Reveal>
     </section>
   );
 }
-
-

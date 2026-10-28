@@ -18,10 +18,10 @@ export interface Project {
   category: string;
   description: string;
   technologies: string[];
-  githubUrl: string;
+  githubUrl?: string;
   demoUrl?: string;
   featured: boolean;
-  previewType?: "codeagent" | "multiagent" | "edurisk";
+  previewType?: "studyhub" | "multiagent" | "edurisk";
   labCategory?: LabCategory;
   tier?: 1 | 2 | 3 | 4;
   status?: "IN DEVELOPMENT";
@@ -30,16 +30,16 @@ export interface Project {
 export const projects: Project[] = [
   // ─── FEATURED PROJECTS (3 MAIN PROJECTS) ──────────────────────────────────
   {
-    id: "codeagent-ide",
+    id: "studyhub",
     number: "01",
-    title: "CodeAgent IDE",
-    category: "AI Developer Tool / AI IDE",
+    title: "StudyHub",
+    category: "AI-Powered Learning Platform",
     description:
-      "An AI-powered development environment designed to assist developers with intelligent coding workflows, project interaction, and agent-driven development.",
-    technologies: ["AI Agents", "Developer Tools", "Intelligent Workflows"],
-    githubUrl: "https://github.com/Vamsee295/CodeAgent-IDE",
+      "An intelligent learning platform designed to help students master programming, practice coding problems, explore structured courses, and track their learning progress through an interactive, personalized learning experience.",
+    technologies: ["AI-Powered Learning", "EdTech", "Interactive Courses", "Coding Practice", "Personalized Learning"],
+    demoUrl: "https://openpath-five.vercel.app/",
     featured: true,
-    previewType: "codeagent",
+    previewType: "studyhub",
   },
   {
     id: "multi-agent-ai",

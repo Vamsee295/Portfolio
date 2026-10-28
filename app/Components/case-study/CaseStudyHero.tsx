@@ -1,113 +1,91 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import Link from "next/link";
-import { ArrowLeft, ExternalLink, GitBranch } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, GitBranch } from "lucide-react";
 import type { CaseStudy } from "../../data/caseStudies";
-import { CodeAgentPreview, MultiAgentPreview, EduRiskPreview } from "../projects/ProjectPreviews";
+import { StudyHubPreview, MultiAgentPreview, EduRiskPreview } from "../projects/ProjectPreviews";
+import { ease } from "../common/motion";
 
 const previewMap: Record<string, React.ReactNode> = {
-  codeagent: <CodeAgentPreview />,
+  studyhub: <StudyHubPreview />,
   multiagent: <MultiAgentPreview />,
   edurisk: <EduRiskPreview />,
 };
 
+const statusColor: Record<string, string> = {
+  ACTIVE: "var(--mint)",
+  EXPERIMENTAL: "var(--gold)",
+};
+
 export default function CaseStudyHero({ study }: { study: CaseStudy }) {
+  const still = useReducedMotion();
+  const rise = (delay: number) => ({
+    initial: still ? false : { opacity: 0, y: 24 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.7, delay, ease },
+  });
+
   return (
-    <section className="pt-28 pb-16 px-6 max-w-7xl mx-auto">
-      {/* Back to Work Nav */}
-      <motion.div
-        initial={{ opacity: 0, x: -10 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.4 }}
-        className="mb-12"
-      >
-        <Link
-          href="/#work"
-          className="inline-flex items-center gap-2 text-[11px] font-mono font-semibold tracking-[0.18em] text-[#9ca3af] hover:text-[#111111] transition-colors uppercase"
-        >
-          <ArrowLeft size={12} />
-          Back to Work
+    <section className="mx-auto max-w-[1180px] px-[clamp(18px,4vw,40px)] pb-20 pt-32">
+      <motion.div {...rise(0)}>
+        <Link href="/#work" className="inline-flex items-center gap-2 font-cond text-sm font-bold uppercase tracking-[0.14em] text-[var(--mute)] hover:text-accent">
+          <ArrowLeft size={14} aria-hidden /> Back to work
         </Link>
       </motion.div>
 
-      <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
-        {/* Left: Content */}
+      <div className="mt-10 grid items-center gap-14 lg:grid-cols-[1.1fr_1fr]">
         <div>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-          >
-            <div className="flex items-center gap-3 mb-6">
-              <span className="text-[10px] font-mono font-semibold tracking-[0.12em] text-[#9ca3af] uppercase">
-                {study.category}
-              </span>
-              <span
-                className={`text-[10px] font-mono font-bold tracking-widest px-2 py-0.5 rounded-sm uppercase ${
-                  study.status === "ACTIVE"
-                    ? "bg-green-100 text-green-700"
-                    : study.status === "EXPERIMENTAL"
-                    ? "bg-orange-100 text-orange-700"
-                    : "bg-gray-100 text-gray-700"
-                }`}
-              >
-                {study.status}
-              </span>
-            </div>
+          <motion.div {...rise(0.05)} className="flex flex-wrap items-center gap-3">
+            <span className="font-cond text-sm font-bold uppercase tracking-[0.12em] text-[var(--mute)]">{study.category}</span>
+            <span
+              className="rotate-2 rounded-md border-2 border-ink px-2 py-0.5 font-cond text-xs font-bold uppercase tracking-[0.1em] text-ink"
+              style={{ background: statusColor[study.status] ?? "var(--paper2)" }}
+            >
+              {study.status}
+            </span>
+          </motion.div>
 
-            <h1 className="text-4xl lg:text-5xl font-black tracking-[-0.04em] text-[#111111] mb-6 leading-tight">
+          <h1 className="mt-5 overflow-hidden font-display text-[clamp(3rem,7vw,6rem)] uppercase leading-[0.92] text-ink">
+            <motion.span className="block" initial={still ? false : { y: "100%" }} animate={{ y: 0 }} transition={{ duration: 0.8, delay: 0.1, ease }}>
               {study.title}
-            </h1>
+            </motion.span>
+          </h1>
 
-            <p className="text-lg text-[#6b7280] leading-relaxed mb-8 max-w-xl">
-              {study.tagline}
-            </p>
+          <motion.p {...rise(0.25)} className="mt-6 max-w-xl text-lg leading-relaxed text-[var(--body)]">
+            {study.tagline}
+          </motion.p>
 
-            <div className="flex flex-wrap gap-2 mb-10">
-              {study.primaryStack.map((tech) => (
-                <span
-                  key={tech}
-                  className="text-[12px] font-mono font-medium text-[#6b7280] bg-[#f8fafc] border border-[#e5e7eb] px-3 py-1.5 rounded-full"
-                >
-                  {tech}
-                </span>
-              ))}
-            </div>
+          <motion.ul {...rise(0.35)} className="mt-7 flex flex-wrap gap-2">
+            {study.primaryStack.map((tech) => (
+              <li key={tech} className="rounded-lg border-2 border-ink bg-card px-2.5 py-1 font-mono text-xs text-ink">
+                {tech}
+              </li>
+            ))}
+          </motion.ul>
 
-            <div className="flex flex-wrap gap-4">
-              <a
-                href={study.githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-[#111111] text-white font-semibold text-sm hover:bg-[#000000] hover:shadow-lg transition-all duration-200"
-              >
-                <GitBranch size={16} />
-                View on GitHub
+          <motion.div {...rise(0.45)} className="mt-9 flex flex-wrap gap-4">
+            {study.demoUrl && (
+              <a href={study.demoUrl} target="_blank" rel="noopener noreferrer" className="btn-stk">
+                Live project <ArrowUpRight size={18} aria-hidden />
               </a>
-              {study.demoUrl && (
-                <a
-                  href={study.demoUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-[#e5e7eb] bg-white text-[#374151] font-semibold text-sm hover:border-[#111111] hover:text-[#111111] transition-all duration-200"
-                >
-                  <ExternalLink size={16} />
-                  Live Demo
-                </a>
-              )}
-            </div>
+            )}
+            {study.githubUrl && (
+              <a href={study.githubUrl} target="_blank" rel="noopener noreferrer" className="btn-stk !bg-card !text-ink">
+                <GitBranch size={18} aria-hidden /> Source
+              </a>
+            )}
           </motion.div>
         </div>
 
-        {/* Right: Visual */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-          className="relative rounded-2xl overflow-hidden border border-[#e5e7eb] bg-[#f8fafc] shadow-2xl shadow-[rgba(0,0,0,0.04)] aspect-[4/3] flex items-center justify-center p-6"
+          initial={still ? false : { opacity: 0, y: 40, rotate: 5 }}
+          animate={{ opacity: 1, y: 0, rotate: 1.5 }}
+          transition={{ duration: 0.9, delay: 0.3, ease }}
+          className="relative mx-auto w-full max-w-[540px]"
         >
-          <div className="w-full h-full max-w-xl">
+          <div className="absolute -inset-6 -z-10 rounded-3xl border-[2.5px] border-ink bg-paper2 [background-image:radial-gradient(rgba(25,22,20,0.12)_1.1px,transparent_1.5px)] [background-size:13px_13px]" />
+          <div className="aspect-[4/3.3] overflow-hidden rounded-xl border-[2.5px] border-ink shadow-[6px_7px_0_var(--ink)]">
             {previewMap[study.previewType]}
           </div>
         </motion.div>

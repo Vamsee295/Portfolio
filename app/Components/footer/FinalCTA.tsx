@@ -1,12 +1,11 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
 import { ArrowRight, GitBranch, Mail } from "lucide-react";
 import { profile } from "../../data/profile";
+import { Marked, Reveal } from "../common/motion";
 
 const LinkedinIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
     <rect width="4" height="12" x="2" y="9" />
     <circle cx="4" cy="4" r="2" />
@@ -14,87 +13,31 @@ const LinkedinIcon = () => (
 );
 
 export default function FinalCTA() {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
-
   return (
-    <section
-      id="contact"
-      className="py-24 border-t border-[#e5e7eb]"
-      aria-labelledby="cta-heading"
-    >
-      <div ref={ref} className="max-w-4xl mx-auto px-6 text-center">
-        {/* Eyebrow */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={inView ? { opacity: 1 } : {}}
-          transition={{ duration: 0.5 }}
-          className="text-xs font-mono font-semibold tracking-[0.22em] text-[#2563eb] mb-8 uppercase"
-        >
-          LET&rsquo;S CONNECT
-        </motion.p>
+    <section id="contact" aria-labelledby="cta-heading" className="relative overflow-hidden py-32">
+      <div className="pointer-events-none absolute inset-0 [background:radial-gradient(rgba(25,22,20,0.13)_1.2px,transparent_1.6px)_0_0/12px_12px]" />
+      <Reveal className="relative mx-auto max-w-[1000px] px-[clamp(18px,4vw,40px)] text-center">
+        <p className="font-mono text-xs tracking-[0.2em] text-[var(--mute)]">06 / LET&rsquo;S CONNECT</p>
+        <p className="mt-6 -rotate-2 font-hand text-[clamp(1.5rem,2.6vw,2rem)] text-[var(--teal)]">got an idea, an internship, or a bug that won&rsquo;t die?</p>
+        <h2 id="cta-heading" className="mt-2 font-display text-[clamp(3.2rem,9vw,7.6rem)] uppercase leading-[0.92] text-ink">
+          Let&rsquo;s build something <Marked>meaningful.</Marked>
+        </h2>
+        <p className="mx-auto mt-6 max-w-lg text-[17px] leading-relaxed text-[var(--body)]">
+          Interested in AI, software engineering, or building something useful? I&rsquo;d love to connect.
+        </p>
 
-        {/* Big headline */}
-        <motion.h2
-          id="cta-heading"
-          initial={{ opacity: 0, y: 28 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7, delay: 0.1, ease: "easeOut" }}
-          className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-[-0.04em] text-[#111111] mb-6 leading-[1.05]"
-        >
-          LET&rsquo;S BUILD SOMETHING
-          <br />
-          <span className="inline-block bg-[#dbeafe] text-[#111111] px-4 py-1 my-1 rounded-xl">
-            MEANINGFUL.
-          </span>
-        </motion.h2>
-
-        {/* Supporting text */}
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.25 }}
-          className="text-base sm:text-lg text-[#6b7280] mb-12 max-w-lg mx-auto"
-        >
-          Interested in AI, software engineering, or building something useful? I&rsquo;d
-          love to connect.
-        </motion.p>
-
-        {/* CTA Buttons */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.35 }}
-          className="flex flex-wrap items-center justify-center gap-4"
-        >
-          <a
-            href={profile.social.email}
-            className="group inline-flex items-center gap-2 bg-[#111111] text-white px-7 py-4 rounded-full text-sm font-semibold hover:bg-[#222222] transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111111] focus-visible:ring-offset-2"
-            aria-label="Send email to Vamsee"
-          >
-            <Mail size={16} aria-hidden="true" />
-            Get In Touch
-            <ArrowRight
-              size={15}
-              className="group-hover:translate-x-1 transition-transform duration-200"
-              aria-hidden="true"
-            />
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+          <a href={profile.social.email} className="btn-stk" aria-label="Send email to Vamsee">
+            <Mail size={18} aria-hidden /> Get in touch <ArrowRight size={18} aria-hidden />
           </a>
-
-          <a
-            href={profile.social.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group inline-flex items-center gap-2 bg-transparent text-[#111111] px-7 py-4 rounded-full text-sm font-semibold border border-[#e5e7eb] hover:border-[#111111] hover:bg-[#f8fafc] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111111] focus-visible:ring-offset-2"
-            aria-label="View GitHub profile (opens in new tab)"
-          >
-            <GitBranch size={16} aria-hidden="true" />
-            View GitHub
+          <a href={profile.social.github} target="_blank" rel="noopener noreferrer" className="btn-stk !bg-card !text-ink" aria-label="GitHub profile (opens in new tab)">
+            <GitBranch size={18} aria-hidden /> GitHub
           </a>
-        </motion.div>
-      </div>
+          <a href={profile.social.linkedin} target="_blank" rel="noopener noreferrer" className="btn-stk !bg-ink !text-paper" aria-label="LinkedIn profile (opens in new tab)">
+            <LinkedinIcon /> LinkedIn
+          </a>
+        </div>
+      </Reveal>
     </section>
   );
 }
-
-

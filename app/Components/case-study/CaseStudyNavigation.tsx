@@ -1,71 +1,62 @@
 "use client";
 
-import { motion } from "framer-motion";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, GitBranch } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, GitBranch } from "lucide-react";
 import type { CaseStudy } from "../../data/caseStudies";
+import { Marked, Reveal } from "../common/motion";
 
-export default function CaseStudyNavigation({ study, prevTitle, nextTitle }: { study: CaseStudy, prevTitle: string, nextTitle: string }) {
+export default function CaseStudyNavigation({ study, prevTitle, nextTitle }: { study: CaseStudy; prevTitle: string; nextTitle: string }) {
   return (
-    <section className="mt-20">
-      {/* GitHub CTA */}
-      <div className="bg-[#fafafa] border-y border-[#e5e7eb] py-24 px-6 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6 }}
-          className="max-w-2xl mx-auto flex flex-col items-center"
-        >
-          <h2 className="text-2xl lg:text-3xl font-black tracking-tight text-[#111111] mb-6">
-            Interested in the implementation?
+    <section className="mt-24">
+      {/* Project CTA */}
+      <div className="dots-night border-y-[2.5px] border-ink bg-night px-[clamp(18px,4vw,40px)] py-24 text-center text-paper">
+        <Reveal className="mx-auto flex max-w-3xl flex-col items-center">
+          <h2 className="font-display text-[clamp(2.4rem,5.5vw,4.4rem)] uppercase leading-[0.95]">
+            {study.demoUrl ? (
+              <>Go poke the <Marked>live build</Marked></>
+            ) : (
+              <>Read the <Marked>source</Marked></>
+            )}
           </h2>
-          <p className="text-sm text-[#6b7280] mb-8">
-            Dive into the source code to see how the architecture was built.
+          <p className="mt-5 max-w-md text-paper/70">
+            {study.demoUrl
+              ? "Open the live experience in a new tab without leaving this case study."
+              : "Dive into the source code to see how the architecture was built."}
           </p>
-          <a
-            href={study.githubUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-[#111111] text-white font-semibold text-sm hover:bg-[#000000] hover:shadow-lg transition-all duration-200"
-          >
-            <GitBranch size={18} />
-            View Source on GitHub
-          </a>
-        </motion.div>
+          <div className="mt-9">
+            {study.demoUrl ? (
+              <a href={study.demoUrl} target="_blank" rel="noopener noreferrer" className="btn-stk !border-paper">
+                Open live project <ArrowUpRight size={18} aria-hidden />
+              </a>
+            ) : study.githubUrl ? (
+              <a href={study.githubUrl} target="_blank" rel="noopener noreferrer" className="btn-stk !border-paper">
+                <GitBranch size={18} aria-hidden /> View source on GitHub
+              </a>
+            ) : null}
+          </div>
+        </Reveal>
       </div>
 
-      {/* Bottom Nav */}
-      <div className="py-12 px-6 max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
-        <Link
-          href={`/projects/${study.prevSlug}`}
-          className="group flex flex-col items-start gap-1 w-full md:w-1/3"
-        >
-          <span className="flex items-center gap-2 text-[10px] font-mono font-bold tracking-[0.15em] text-[#9ca3af] uppercase mb-1">
-            <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
-            Previous Project
+      {/* Prev / next */}
+      <nav aria-label="More case studies" className="mx-auto grid max-w-[1180px] gap-5 px-[clamp(18px,4vw,40px)] py-14 md:grid-cols-[1fr_auto_1fr] md:items-center">
+        <Link href={`/projects/${study.prevSlug}`} className="stk group p-6 transition-transform hover:-translate-x-1">
+          <span className="flex items-center gap-2 font-cond text-sm font-bold uppercase tracking-[0.12em] text-[var(--mute)]">
+            <ArrowLeft size={14} className="transition-transform group-hover:-translate-x-1" aria-hidden /> Previous
           </span>
-          <span className="text-sm font-semibold text-[#111111]">{prevTitle}</span>
-        </Link>
-        
-        <Link
-          href="/#work"
-          className="text-xs font-mono font-bold tracking-[0.15em] text-[#6b7280] hover:text-[#111111] uppercase whitespace-nowrap transition-colors"
-        >
-          Back to Work
+          <span className="mt-2 block font-display text-2xl uppercase leading-none text-ink">{prevTitle}</span>
         </Link>
 
-        <Link
-          href={`/projects/${study.nextSlug}`}
-          className="group flex flex-col items-end gap-1 w-full md:w-1/3 text-right"
-        >
-          <span className="flex items-center gap-2 text-[10px] font-mono font-bold tracking-[0.15em] text-[#9ca3af] uppercase mb-1">
-            Next Project
-            <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-          </span>
-          <span className="text-sm font-semibold text-[#111111]">{nextTitle}</span>
+        <Link href="/#work" className="text-center font-cond text-sm font-bold uppercase tracking-[0.14em] text-[var(--mute)] hover:text-accent">
+          All work
         </Link>
-      </div>
+
+        <Link href={`/projects/${study.nextSlug}`} className="stk group p-6 text-right transition-transform hover:translate-x-1">
+          <span className="flex items-center justify-end gap-2 font-cond text-sm font-bold uppercase tracking-[0.12em] text-[var(--mute)]">
+            Next <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" aria-hidden />
+          </span>
+          <span className="mt-2 block font-display text-2xl uppercase leading-none text-ink">{nextTitle}</span>
+        </Link>
+      </nav>
     </section>
   );
 }

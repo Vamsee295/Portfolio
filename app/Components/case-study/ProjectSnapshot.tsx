@@ -19,14 +19,14 @@ export default function ProjectSnapshot({ study }: { study: CaseStudy }) {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.6 }}
-        className="grid grid-cols-2 md:grid-cols-5 gap-8 py-8 border-y border-[#e5e7eb]"
+        className="grid grid-cols-2 md:grid-cols-5 gap-8 py-8 border-y border-[#DDD2C1]"
       >
         {metaItems.map((item, i) => (
           <div key={item.label} className="flex flex-col gap-2">
-            <span className="text-[10px] font-mono font-bold tracking-[0.15em] text-[#9ca3af] uppercase">
+            <span className="text-[10px] font-mono font-bold tracking-[0.15em] text-[#8C8178] uppercase">
               {item.label}
             </span>
-            <span className="text-sm font-medium text-[#111111]">
+            <span className="text-sm font-medium text-[#191614]">
               {item.value}
             </span>
           </div>

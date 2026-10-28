@@ -1,5 +1,3 @@
-import { ReactNode } from "react";
-
 export type CaseStudyStatus = "ACTIVE" | "COMPLETED" | "EXPERIMENTAL";
 
 export interface CaseStudy {
@@ -14,11 +12,11 @@ export interface CaseStudy {
   projectType: string;
   primaryStack: string[];
   architectureSummary: string;
-  githubUrl: string;
+  githubUrl?: string;
   demoUrl?: string;
   prevSlug: string;
   nextSlug: string;
-  previewType: "codeagent" | "multiagent" | "edurisk";
+  previewType: "studyhub" | "multiagent" | "edurisk";
   
   // Section 01: Problem
   problem: {
@@ -82,143 +80,143 @@ export interface CaseStudy {
 }
 
 export const caseStudies: Record<string, CaseStudy> = {
-  "codeagent-ide": {
-    slug: "codeagent-ide",
-    id: "codeagent-ide",
+  "studyhub": {
+    slug: "studyhub",
+    id: "studyhub",
     number: "01",
-    title: "CodeAgent IDE",
-    category: "Developer Tools / AI Infrastructure",
-    tagline: "A developer-controlled AI IDE exploring provider abstraction and Bring Your Own Key (BYOK) architecture.",
+    title: "StudyHub",
+    category: "AI-Powered Learning Platform",
+    tagline: "A unified learning platform for engineering students to explore structured roadmaps, technical resources, coding practice, and career preparation.",
     status: "ACTIVE",
-    role: "Core Developer",
-    projectType: "AI Developer Tool",
-    primaryStack: ["TypeScript", "React", "Next.js", "AI APIs"],
-    architectureSummary: "Provider Abstraction Layer",
-    githubUrl: "https://github.com/Vamsee295/CodeAgent-IDE",
+    role: "Product & Frontend Development",
+    projectType: "Personalized Learning Platform",
+    primaryStack: ["Next.js", "React", "Tailwind CSS"],
+    architectureSummary: "Next.js Learning Experience",
+    demoUrl: "https://openpath-five.vercel.app/",
     prevSlug: "edurisk",
     nextSlug: "multi-agent-ai",
-    previewType: "codeagent",
+    previewType: "studyhub",
     
     problem: {
-      summary: "AI coding environments have transformed software development, but many developers are still tied to the provider ecosystem and usage limits of the specific tool they use. When the platform's AI quota is exhausted, the developer has to wait, upgrade, or switch workflows. The IDE vendor dictates the models.",
+      summary: "Students preparing for technical roles often have to piece together roadmaps, resources, practice material, company preparation, and career tools from disconnected sources. StudyHub brings these learning paths into one guided experience.",
       points: [
         {
-          title: "Vendor Lock-In",
-          description: "Developers are forced to consume the platform's AI quota and use only the models the platform officially supports."
+          title: "Fragmented Preparation",
+          description: "Learning content, coding practice, interview preparation, and career resources are commonly scattered across separate tools and documents."
         },
         {
-          title: "Lack of Local Control",
-          description: "Privacy-sensitive workflows often cannot send codebase context to cloud providers, requiring local model inference."
+          title: "Unclear Learning Paths",
+          description: "Students need a structured way to move from foundational topics to role-focused preparation without losing sight of the bigger goal."
         }
       ]
     },
 
     idea: {
-      statement: "Build a development environment where the developer controls the AI layer. Instead of forcing dependence on a single platform's quota, CodeAgent IDE utilizes a Bring Your Own Key (BYOK) architecture, allowing developers to configure their own APIs or connect to local models.",
+      statement: "Create one approachable place for engineering students to discover structured learning tracks, technical resources, practice opportunities, and career-preparation tools.",
       flowSteps: [
-        { step: "1", label: "CODE CONTEXT", desc: "Editor tracks file structure & AST" },
-        { step: "2", label: "INTENT", desc: "Developer requests assistance" },
-        { step: "3", label: "ABSTRACTION", desc: "Request sent to Common AI Interface" },
-        { step: "4", label: "PROVIDER", desc: "Routed to DeepSeek, Groq, or local Ollama" },
-        { step: "5", label: "FEEDBACK", desc: "Provider response updates editor" }
+        { step: "1", label: "EXPLORE", desc: "Browse learning paths and topics" },
+        { step: "2", label: "CHOOSE", desc: "Select a role-focused roadmap" },
+        { step: "3", label: "LEARN", desc: "Use curated technical resources" },
+        { step: "4", label: "PRACTICE", desc: "Work through coding and preparation material" },
+        { step: "5", label: "PREPARE", desc: "Use company and career tools" }
       ]
     },
 
     architecture: {
-      overview: "CodeAgent IDE uses an abstraction layer that isolates the coding workflow from the specific underlying LLM provider, allowing seamless switching between cloud APIs and local inference.",
+      overview: "StudyHub is a Next.js web experience that organizes its learning content into focused paths, practice areas, resources, and career-oriented tools.",
       nodes: [
-        { layer: "User Interface", component: "IDE Workflow", detail: "Code editor and context tracking" },
-        { layer: "Interface", component: "Common AI Layer", detail: "Standardizes requests across multiple providers" },
-        { layer: "Cloud Provider", component: "DeepSeek / Groq API", detail: "Utilizes available API quotas via developer keys" },
-        { layer: "Local Provider", component: "Ollama Integration", detail: "Runs local model inference for absolute privacy" }
+        { layer: "Experience", component: "Learning Hub", detail: "A single entry point for preparation content" },
+        { layer: "Learning", component: "Role Roadmaps", detail: "Structured tracks for technical career paths" },
+        { layer: "Practice", component: "Preparation Areas", detail: "Coding, interview, and company-preparation material" },
+        { layer: "Discovery", component: "Search & Resources", detail: "Find topics and supporting study material" }
       ]
     },
 
     theory: [
       {
-        title: "Bring Your Own Key (BYOK)",
-        concept: "Developer Control",
-        whatItIs: "An architectural pattern where the application connects to a service using the end-user's own API credentials rather than routing through the platform's central billing account.",
-        whyUseful: "It guarantees provider flexibility, allows easier experimentation with new models, and significantly reduces dependency on a single AI platform's usage limits.",
-        howUsed: "Developers configure their own keys (e.g., DeepSeek, Groq) or point the IDE to a local Ollama instance."
+        title: "Structured Learning Paths",
+        concept: "Guided Progression",
+        whatItIs: "A roadmap groups related topics into a sequence that learners can follow toward a defined skill or role.",
+        whyUseful: "It reduces the burden of deciding what to learn next and connects individual topics to a broader preparation goal.",
+        howUsed: "StudyHub presents role-focused learning tracks alongside resources and practice areas."
       },
       {
-        title: "Provider Abstraction",
-        concept: "Multi-Provider Interface",
-        whatItIs: "A software layer that standardizes inputs and outputs so the core application does not need to know which specific external service it is communicating with.",
-        whyUseful: "The IDE shouldn't need to completely redesign its coding workflow every time the underlying model changes. It isolates authentication, request formatting, and error handling.",
-        howUsed: "A unified AI interface handles the disparate API structures of various cloud LLMs and local engines, presenting a single stream to the editor."
+        title: "Practice-Oriented Preparation",
+        concept: "Learn by Applying",
+        whatItIs: "Practice connects reference material to active problem solving and interview preparation.",
+        whyUseful: "Technical learning is more useful when students can apply concepts while preparing for the expectations of real roles.",
+        howUsed: "The product groups coding practice and company-preparation experiences with its learning material."
       },
       {
-        title: "Local AI Inference",
-        concept: "Ollama Integration",
-        whatItIs: "Running supported language models entirely on the user's local hardware rather than relying on external cloud endpoints.",
-        whyUseful: "Pros: Complete privacy, full local control, and no cloud API quota consumption. Cons: Requires significant local hardware, and model quality depends directly on machine capabilities.",
-        howUsed: "The abstraction layer treats a local Ollama endpoint exactly like a cloud provider, keeping codebase context strictly on the local machine."
+        title: "Focused Discovery",
+        concept: "Searchable Resources",
+        whatItIs: "A discovery layer helps learners surface relevant topics and materials from a broader resource collection.",
+        whyUseful: "It makes a large learning library easier to navigate when a student has a specific concept or interview topic in mind.",
+        howUsed: "StudyHub exposes search and topic shortcuts from the primary learning experience."
       }
     ],
 
     features: [
       {
-        title: "Configurable AI Providers",
-        description: "Seamlessly switch between available quotas from providers like DeepSeek or Groq using your own API keys."
+        title: "Role-Focused Learning Tracks",
+        description: "Structured roadmaps help students explore engineering paths such as software, AI/ML, data, and cloud preparation."
       },
       {
-        title: "Local Ollama Support",
-        description: "Connect the IDE directly to local models for entirely offline, private inference."
+        title: "Technical Resource Discovery",
+        description: "Topic-focused resources cover core programming and computer-science preparation areas."
       },
       {
-        title: "Provider Abstraction Layer",
-        description: "A flexible architecture allowing new model providers to be integrated without rewriting the core editor interactions."
+        title: "Practice & Career Tools",
+        description: "Practice, company preparation, and career tools keep learning connected to students' next steps."
       }
     ],
 
     decisions: [
       {
-        decision: "Why should the IDE own the AI layer?",
-        why: "Because the IDE is the developer's environment. The AI provider should ideally be configurable rather than making the developer completely dependent on the IDE vendor. This is the central engineering philosophy of the project.",
-        tradeoff: "Places the burden of configuration and API key management on the user rather than providing an instant, one-click managed solution."
+        decision: "Unified learning surface",
+        why: "A single experience makes it easier to connect roadmaps, resources, practice, and career preparation.",
+        tradeoff: "The product must keep varied learning areas easy to browse without overwhelming students."
       },
       {
-        decision: "Web-Based Abstraction",
-        why: "To allow rapid iteration and testing of AI capabilities while developing the abstraction boundaries.",
-        tradeoff: "Restricts native local file system access compared to an Electron or Rust desktop binary."
+        decision: "Role-based organization",
+        why: "Starting from a target role gives learners a practical frame for selecting topics and preparation material.",
+        tradeoff: "Students with cross-disciplinary goals may need to move between more than one track."
       }
     ],
 
     challenges: [
       {
-        challenge: "Handling Disparate Provider APIs",
-        approach: "Built a standard internal request schema that the abstraction layer maps into the specific format (e.g., OpenAI-compatible vs proprietary endpoints) required by the selected provider.",
-        lesson: "Provider flexibility requires extremely rigid internal data structures."
+        challenge: "Making a broad curriculum navigable",
+        approach: "Organize material into learning tracks, topic shortcuts, and searchable resources so students have several clear entry points.",
+        lesson: "Learning platforms need both a high-level path and quick ways to find a specific topic."
       },
       {
-        challenge: "Streaming Responses to Editor State",
-        approach: "Implemented a unified streaming parser that normalizes chunks from different APIs to update the editor synchronously.",
-        lesson: "Different LLMs stream tokens at drastically different rates; the editor UI must accommodate erratic network speeds."
+        challenge: "Connecting study to career preparation",
+        approach: "Place practice, company preparation, and career tools alongside technical-learning paths.",
+        lesson: "Students benefit when preparation feels like a connected system rather than a collection of isolated resources."
       }
     ],
 
     outcome: {
-      summary: "Architected a developer-controlled AI environment that frees users from strict vendor lock-in.",
+      summary: "StudyHub provides an active, unified entry point for technical learning and career preparation.",
       highlights: [
-        "Proved the viability of a BYOK architecture in an IDE context.",
-        "Successfully abstracted cloud APIs (DeepSeek, Groq) and local inference (Ollama).",
-        "Established a foundation for model-agnostic coding workflows."
+        "Brings roadmaps, resources, practice, company preparation, and career tools together.",
+        "Offers role-focused tracks for students exploring technical careers.",
+        "Provides a responsive web experience with discovery and search entry points."
       ]
     },
 
     learnings: [
-      "Separating the intelligence layer from the editor layer is crucial for long-term maintainability.",
-      "Local inference (Ollama) fundamentally changes latency expectations; UI must be highly responsive to compensate.",
-      "Developer control is often more valuable than a slightly more polished, but locked-down, managed experience."
+      "A learning product benefits from combining guided paths with flexible discovery.",
+      "Career preparation is easier to sustain when resources and practice live in the same experience.",
+      "Clear information architecture is essential when presenting a wide range of technical topics."
     ],
 
     futureRoadmap: [
-      "Automatic provider fallback (if one API fails, gracefully switch to another).",
-      "Model benchmarking & cost/latency comparisons directly in the IDE.",
-      "Per-project provider configuration.",
-      "Model-specific coding profiles (e.g., DeepSeek for generation, local model for fast autocomplete)."
+      "Expand the catalog of structured learning tracks.",
+      "Add more targeted practice experiences for technical preparation.",
+      "Continue refining personalized pathways through the learning material.",
+      "Evolve career tools alongside the needs of engineering students."
     ]
   },
 
@@ -235,7 +233,7 @@ export const caseStudies: Record<string, CaseStudy> = {
     primaryStack: ["Python", "FastAPI", "Next.js", "FAISS", "MongoDB"],
     architectureSummary: "Compound Query Routing & Synthesis",
     githubUrl: "https://github.com/Vamsee295/Multi-Agent-AI",
-    prevSlug: "codeagent-ide",
+    prevSlug: "studyhub",
     nextSlug: "edurisk",
     previewType: "multiagent",
     
@@ -386,7 +384,7 @@ export const caseStudies: Record<string, CaseStudy> = {
     architectureSummary: "3-Portal Service-Oriented Architecture",
     githubUrl: "https://github.com/Vamsee295/Student-dropout-risk-dashboard",
     prevSlug: "multi-agent-ai",
-    nextSlug: "codeagent-ide",
+    nextSlug: "studyhub",
     previewType: "edurisk",
     
     problem: {

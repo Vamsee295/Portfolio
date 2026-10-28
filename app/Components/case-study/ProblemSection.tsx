@@ -13,14 +13,14 @@ export default function ProblemSection({ study }: { study: CaseStudy }) {
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.6 }}
       >
-        <h2 className="text-sm font-mono font-bold tracking-[0.15em] text-[#9ca3af] uppercase mb-8">
+        <h2 className="font-display text-[clamp(2.2rem,4.5vw,3.6rem)] uppercase leading-none text-ink mb-8">
           01 / The Problem
         </h2>
         
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
           {/* Left Narrative */}
           <div>
-            <p className="text-lg text-[#374151] leading-relaxed mb-6 font-medium">
+            <p className="text-lg text-[#3A332E] leading-relaxed mb-6 font-medium">
               {study.problem.summary}
             </p>
           </div>
@@ -34,17 +34,17 @@ export default function ProblemSection({ study }: { study: CaseStudy }) {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.5, delay: i * 0.15 }}
-                className="bg-[#fafafa] border border-[#e5e7eb] rounded-xl p-6 hover:border-[#d1d5db] transition-colors"
+                className="bg-card border-2 border-ink rounded-xl p-6 hover:border-[#C9BCA8] transition-colors shadow-[4px_5px_0_var(--ink)]"
               >
                 <div className="flex items-start gap-4">
-                  <div className="mt-1 text-[#ef4444]">
+                  <div className="mt-1 text-[#C8603A]">
                     <AlertCircle size={18} />
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold text-[#111111] mb-2">
+                    <h3 className="font-display text-2xl uppercase leading-none text-ink mb-2">
                       {point.title}
                     </h3>
-                    <p className="text-sm text-[#6b7280] leading-relaxed">
+                    <p className="text-sm text-[#6B615A] leading-relaxed">
                       {point.description}
                     </p>
                   </div>

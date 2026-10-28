@@ -1,21 +1,26 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
-import { ArrowRight } from "lucide-react";
-import { useRef } from "react";
+import { motion, useReducedMotion } from "framer-motion";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import type { Project } from "../../data/projects";
-import {
-  CodeAgentPreview,
-  MultiAgentPreview,
-  EduRiskPreview,
-} from "./ProjectPreviews";
+import { MultiAgentPreview, EduRiskPreview, StudyHubPreview } from "./ProjectPreviews";
 import { useViewMode } from "../../context/ViewModeContext";
+import { CountUp, ease } from "../common/motion";
 
-const previewMap: Record<string, React.ReactNode> = {
-  codeagent:  <CodeAgentPreview />,
+type PreviewType = NonNullable<Project["previewType"]>;
+
+const previewMap: Record<PreviewType, React.ReactNode> = {
+  studyhub: <StudyHubPreview />,
   multiagent: <MultiAgentPreview />,
-  edurisk:    <EduRiskPreview />,
+  edurisk: <EduRiskPreview />,
+};
+
+// One headline number per featured project, taken from what each preview shows.
+const statMap: Record<PreviewType, { value: number; suffix: string; label: string; color: string }> = {
+  studyhub: { value: 3, suffix: "", label: "career tracks", color: "var(--teal)" },
+  multiagent: { value: 3, suffix: "", label: "agents in parallel", color: "var(--gold)" },
+  edurisk: { value: 82, suffix: "%", label: "risk, explained", color: "var(--accent)" },
 };
 
 interface ProjectCardProps {
@@ -24,204 +29,90 @@ interface ProjectCardProps {
 }
 
 export default function ProjectCard({ project, index }: ProjectCardProps) {
-  const ref = useRef<HTMLElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
-  const { effectiveMode } = useViewMode();
-
+  const mobile = useViewMode().effectiveMode === "mobile";
+  const still = useReducedMotion();
   const caseStudySlug = project.id === "student-dropout-risk" ? "edurisk" : project.id;
+  const stat = project.previewType ? statMap[project.previewType] : null;
+  const tilt = index % 2 ? -1.5 : 1.5;
 
-  const motionProps = {
-    ref: ref as React.RefObject<HTMLElement>,
-    initial: { opacity: 0, y: 40 },
-    animate: inView ? { opacity: 1, y: 0 } : {},
-    transition: { duration: 0.7, delay: index * 0.12, ease: "easeOut" as const },
-  };
-
-  // ─── Mobile Experience ─────────────────────────────────────────────────────
-  if (effectiveMode === "mobile") {
-    return (
-      <motion.article
-        {...motionProps}
-        className="group bg-white border border-[#e5e7eb] rounded-2xl overflow-hidden active:scale-[0.99] transition-transform duration-200"
-      >
-        {/* Visual Preview — top, full width */}
-        {project.previewType && (
-          <div className="relative bg-[#f8fafc] border-b border-[#e5e7eb] p-6 flex items-center justify-center min-h-48">
-            <div className="w-full" style={{ aspectRatio: "16/9", maxHeight: 220 }}>
-              {previewMap[project.previewType]}
-            </div>
-          </div>
-        )}
-
-        {/* Content — vertical stack */}
-        <div className="p-6 flex flex-col gap-4">
-          {/* Number + Category */}
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] font-mono font-bold text-[#111111] opacity-60">
-              {project.number}
-            </span>
-            <span className="text-[10px] font-mono font-semibold tracking-[0.12em] text-[#9ca3af] uppercase">
-              {project.category}
-            </span>
-          </div>
-
-          {/* Title */}
-          <h3 className="text-2xl font-black tracking-tight text-[#111111] leading-tight">
-            {project.title}
-          </h3>
-
-          {/* Description */}
-          <p className="text-sm text-[#6b7280] leading-relaxed">
-            {project.description}
-          </p>
-
-          {/* Tech tags — scrollable horizontal row on mobile */}
-          <div className="flex flex-wrap gap-1.5">
-            {project.technologies.slice(0, 5).map((tech) => (
-              <span
-                key={tech}
-                className="text-[11px] font-mono font-medium text-[#6b7280] bg-[#f8fafc] border border-[#e5e7eb] px-2.5 py-1 rounded-full"
-              >
-                {tech}
-              </span>
-            ))}
-            {project.technologies.length > 5 && (
-              <span className="text-[11px] font-mono font-medium text-[#9ca3af] px-2 py-1">
-                +{project.technologies.length - 5}
-              </span>
-            )}
-          </div>
-
-          {/* CTA — large touch target */}
-          <div className="pt-2 border-t border-[#f3f4f6]">
-            {project.featured ? (
-              <Link
-                href={`/projects/${caseStudySlug}`}
-                className="flex items-center justify-center gap-2 w-full py-4 bg-[#111111] text-white rounded-xl text-sm font-bold hover:bg-black transition-colors active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111111]"
-                aria-label={`View case study for ${project.title}`}
-              >
-                View Case Study
-                <ArrowRight size={16} aria-hidden="true" />
-              </Link>
-            ) : (
-              <a
-                href={project.githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 w-full py-4 bg-[#f8fafc] text-[#111111] rounded-xl text-sm font-bold border border-[#e5e7eb] hover:border-[#111111] transition-colors active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111111]"
-                aria-label={`View ${project.title} on GitHub`}
-              >
-                View on GitHub
-                <ArrowRight size={16} aria-hidden="true" />
-              </a>
-            )}
-          </div>
-        </div>
-      </motion.article>
-    );
-  }
-
-  // ─── Desktop Experience ────────────────────────────────────────────────────
   return (
     <motion.article
-      {...motionProps}
-      className="group relative bg-white border border-[#e5e7eb] rounded-2xl overflow-hidden hover:border-[#111111] hover:shadow-xl hover:shadow-[rgba(0,0,0,0.06)] transition-all duration-400"
-      style={{ transition: "all 0.35s cubic-bezier(0.22, 1, 0.36, 1)" }}
+      initial={still ? false : { opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.15 }}
+      transition={{ duration: 0.8, ease }}
+      className="stk group relative overflow-hidden transition-[transform,box-shadow] duration-200 hover:-translate-x-[3px] hover:-translate-y-[3px] hover:shadow-[8px_9px_0_var(--ink)]"
     >
-      <div className="grid lg:grid-cols-2 gap-0">
-        {/* Left — Content */}
-        <div className="p-8 lg:p-10 flex flex-col justify-between">
+      <div className={`grid grid-cols-[minmax(0,1fr)] ${mobile ? "" : "lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]"}`}>
+        <div className="flex flex-col justify-between p-7 sm:p-10">
           <div>
-            {/* Number + Category */}
-            <div className="flex items-center justify-between mb-6">
-              <span className="text-xs font-mono font-bold text-[#111111] opacity-70">
-                {project.number}
-              </span>
-              <span className="text-[10px] font-mono font-semibold tracking-[0.12em] text-[#9ca3af] uppercase">
+            <div className="flex items-start justify-between gap-4">
+              <span className="font-display text-6xl leading-none text-accent">{project.number}</span>
+              <span className="max-w-[60%] text-right font-cond text-sm font-bold uppercase tracking-[0.12em] text-[var(--mute)]">
                 {project.category}
               </span>
             </div>
-
-            {/* Title */}
-            <h3 className="text-2xl lg:text-3xl font-black tracking-tight text-[#111111] mb-4 leading-tight group-hover:text-[#000000] transition-colors duration-300">
-              {project.title}
-            </h3>
-
-            {/* Description */}
-            <p className="text-sm text-[#6b7280] leading-relaxed mb-8">
-              {project.description}
-            </p>
-
-            {/* Tech tags */}
-            <div className="flex flex-wrap gap-2">
+            <h3 className="mt-6 font-display text-[clamp(2rem,3.6vw,3rem)] uppercase leading-[0.95] text-ink">{project.title}</h3>
+            <p className="mt-4 leading-relaxed text-[var(--body)]">{project.description}</p>
+            <ul className="mt-6 flex flex-wrap gap-2">
               {project.technologies.map((tech) => (
-                <span
-                  key={tech}
-                  className="text-[11px] font-mono font-medium text-[#6b7280] bg-[#f8fafc] border border-[#e5e7eb] px-2.5 py-1 rounded-full"
-                >
+                <li key={tech} className="rounded-lg border-2 border-ink bg-paper px-2.5 py-1 font-mono text-xs text-ink">
                   {tech}
-                </span>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
 
-          {/* CTA */}
-          <div className="mt-8 pt-6 border-t border-[#f3f4f6] flex items-center justify-between">
+          <div className="mt-10 flex flex-wrap items-center justify-between gap-4 border-t-2 border-dashed border-[var(--line)] pt-6">
             {project.featured ? (
-              <Link
-                href={`/projects/${caseStudySlug}`}
-                className="group/btn inline-flex items-center gap-2 px-6 py-2.5 bg-[#111111] text-white rounded-lg text-sm font-semibold hover:bg-[#000000] hover:shadow-lg transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111111]"
-                aria-label={`View case study for ${project.title}`}
-              >
-                View Case Study
-                <ArrowRight
-                  size={15}
-                  className="group-hover/btn:translate-x-1 transition-transform duration-200"
-                  aria-hidden="true"
-                />
+              <Link href={`/projects/${caseStudySlug}`} className="btn-stk" aria-label={`View case study for ${project.title}`}>
+                Case study <ArrowRight size={18} aria-hidden />
               </Link>
             ) : (
-              <a
-                href={project.githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group/btn inline-flex items-center gap-2 text-sm font-semibold text-[#6b7280] hover:text-[#111111] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111111] rounded"
-                aria-label={`View ${project.title} on GitHub`}
-              >
-                View on GitHub
-                <ArrowRight
-                  size={15}
-                  className="group-hover/btn:translate-x-1 transition-transform duration-200"
-                  aria-hidden="true"
-                />
+              <a href={project.githubUrl!} target="_blank" rel="noopener noreferrer" className="btn-stk" aria-label={`View ${project.title} on GitHub`}>
+                GitHub <ArrowRight size={18} aria-hidden />
               </a>
             )}
-
-            {project.featured && (
+            {project.demoUrl && (
               <a
-                href={project.githubUrl}
+                href={project.demoUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[11px] font-mono font-bold tracking-widest text-[#9ca3af] uppercase hover:text-[#111111] transition-colors"
-                aria-label={`View ${project.title} on GitHub`}
+                className="inline-flex items-center gap-1 font-cond text-base font-bold uppercase tracking-[0.1em] text-ink underline decoration-accent decoration-2 underline-offset-4 hover:text-accent"
+                aria-label={`Open ${project.title} live`}
               >
-                GitHub ↗
+                Live project <ArrowUpRight size={16} aria-hidden />
               </a>
             )}
           </div>
         </div>
 
-        {/* Right — Preview (desktop only, with hover scale) */}
-        <div className="relative bg-[#f8fafc] border-t lg:border-t-0 lg:border-l border-[#e5e7eb] p-6 flex items-center justify-center min-h-64 lg:min-h-auto">
+        <div className={`relative flex items-center justify-center overflow-hidden border-t-[2.5px] border-ink bg-paper2 p-8 sm:p-12 ${mobile ? "" : "lg:border-l-[2.5px] lg:border-t-0"}`}>
+          <div className="pointer-events-none absolute inset-0 [background:radial-gradient(rgba(25,22,20,0.12)_1.1px,transparent_1.5px)_0_0/13px_13px]" />
           <motion.div
-            className="w-full h-full"
-            whileHover={{ scale: 1.02 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
+            className="relative w-full max-w-[440px]"
+            style={{ rotate: tilt }}
+            whileHover={still ? undefined : { rotate: 0, scale: 1.02 }}
+            transition={{ type: "spring", stiffness: 260, damping: 20 }}
           >
-            <div className="w-full" style={{ aspectRatio: "4/3" }}>
+            <div className="aspect-[4/3.3] overflow-hidden rounded-xl border-[2.5px] border-ink shadow-[5px_6px_0_var(--ink)]">
               {project.previewType ? previewMap[project.previewType] : null}
             </div>
           </motion.div>
+          {stat && (
+            <motion.div
+              className="absolute bottom-5 right-5 rotate-3 rounded-xl border-[2.5px] border-ink bg-card px-4 py-2 shadow-[3px_4px_0_var(--ink)]"
+              initial={still ? false : { scale: 0, rotate: -20 }}
+              whileInView={{ scale: 1, rotate: 3 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.5, type: "spring", stiffness: 320, damping: 15 }}
+            >
+              <p className="font-display text-3xl leading-none" style={{ color: stat.color }}>
+                <CountUp to={stat.value} suffix={stat.suffix} />
+              </p>
+              <p className="font-cond text-xs font-bold uppercase tracking-[0.1em] text-ink">{stat.label}</p>
+            </motion.div>
+          )}
         </div>
       </div>
     </motion.article>

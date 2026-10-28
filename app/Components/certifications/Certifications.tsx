@@ -1,98 +1,95 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
-import { Award, ArrowUpRight, ShieldCheck, FileBadge } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
+import { ArrowUpRight } from "lucide-react";
 import { certifications } from "../../data/certifications";
+import { Marked, Reveal, ease } from "../common/motion";
 
 export default function Certifications() {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const still = useReducedMotion();
 
   return (
-    <section
-      id="certifications"
-      className="py-24 border-t border-[#e5e7eb] bg-white"
-      aria-labelledby="certifications-heading"
-    >
-      <div className="max-w-6xl mx-auto px-6">
-        {/* Eyebrow */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={inView ? { opacity: 1 } : {}}
-          transition={{ duration: 0.5 }}
-          className="text-xs font-mono font-semibold tracking-[0.22em] text-[#2563eb] mb-8 uppercase"
-        >
-          GLOBAL CERTIFICATIONS
-        </motion.p>
+    <section id="certifications" aria-labelledby="certifications-heading" className="relative mx-auto max-w-[1180px] px-[clamp(18px,4vw,40px)] py-28">
+      <div className="grid grid-cols-[minmax(0,1fr)] items-center gap-16 lg:grid-cols-[440px_minmax(0,1fr)]">
+        <Reveal className="order-2 lg:order-1">
+          {/* Receipt: one row per credential, each ticks in and links to its proof. */}
+          <div className="relative -rotate-1 border-[2.5px] border-b-0 border-ink bg-card px-7 pb-8 pt-7 font-mono text-[13px] text-ink shadow-[5px_6px_0_var(--ink)]">
+            <p className="text-center font-display text-3xl uppercase leading-none">Vamsee / credentials</p>
+            <p className="mt-1 text-center text-[11px] text-[var(--mute)]">verified · issued by the vendors themselves</p>
+            <div className="my-5 border-t-2 border-dashed border-[var(--line)]" />
 
-        {/* Header & Description */}
-        <div ref={ref} className="max-w-2xl mb-16">
-          <motion.h2
-            id="certifications-heading"
-            initial={{ opacity: 0, y: 16 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-4xl lg:text-5xl font-black tracking-[-0.03em] text-[#111111] mb-4"
-          >
-            Credentials I've Earned
-          </motion.h2>
+            <ul className="space-y-1">
+              {certifications.map((cert, i) => (
+                <motion.li
+                  key={cert.id}
+                  initial={still ? false : { opacity: 0.25 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.3 + i * 0.22, duration: 0.25 }}
+                >
+                  <a
+                    href={cert.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group -mx-2 flex items-baseline gap-2 rounded-md px-2 py-1.5 hover:bg-paper2"
+                    aria-label={`View ${cert.type} for ${cert.title}`}
+                  >
+                    <span className="min-w-0">
+                      <span className="block truncate group-hover:text-accent">{cert.shortName ?? cert.title}</span>
+                      <span className="block text-[11px] text-[var(--mute)]">{cert.issuer} · {cert.category}</span>
+                    </span>
+                    <span aria-hidden className="mb-1 flex-1 border-b border-dotted border-[var(--mute)]" />
+                    <motion.span
+                      className="shrink-0 text-[var(--teal)]"
+                      initial={still ? false : { scale: 0 }}
+                      whileInView={{ scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.45 + i * 0.22, type: "spring", stiffness: 500, damping: 15 }}
+                    >
+                      ✓
+                    </motion.span>
+                    <ArrowUpRight size={14} className="shrink-0 self-center text-[var(--mute)] group-hover:text-accent" aria-hidden />
+                  </a>
+                </motion.li>
+              ))}
+            </ul>
+
+            <div className="my-5 border-t-2 border-dashed border-[var(--line)]" />
+            <div className="flex items-end justify-between">
+              <span className="font-display text-2xl uppercase">Total</span>
+              <span className="font-display text-4xl text-accent">{certifications.length}</span>
+            </div>
+            <p className="mt-1 text-right text-[11px] text-[var(--mute)]">credentials · and counting</p>
+            <div
+              aria-hidden
+              className="mt-6 h-12 [background:repeating-linear-gradient(90deg,var(--ink)_0_2px,transparent_2px_4px,var(--ink)_4px_7px,transparent_7px_9px,var(--ink)_9px_10px,transparent_10px_13px)]"
+            />
+            {/* torn bottom edge */}
+            <span
+              aria-hidden
+              className="absolute -bottom-[12px] left-[-2.5px] right-[-2.5px] h-[14px] [background:radial-gradient(circle_at_7px_0,var(--card)_6px,var(--ink)_6.5px,var(--ink)_8.5px,transparent_9px)_0_0/14px_14px_repeat-x]"
+            />
+          </div>
+        </Reveal>
+
+        <Reveal delay={0.1} className="order-1 lg:order-2">
+          <p className="font-mono text-xs tracking-[0.2em] text-[var(--mute)]">04 / CERTIFICATIONS</p>
+          <h2 id="certifications-heading" className="mt-3 font-display text-[clamp(2.8rem,6vw,5.2rem)] uppercase leading-[0.95] text-ink">
+            Credentials I&rsquo;ve <Marked>earned</Marked>
+          </h2>
+          <p className="mt-5 max-w-lg text-[17px] leading-relaxed text-[var(--body)]">
+            Globally recognised certifications across cloud, databases, networking, data science and communication. Every line on the receipt links to the issuer&rsquo;s own proof.
+          </p>
           <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-lg text-[#6b7280] leading-relaxed"
+            className="mt-8 rotate-2 font-hand text-2xl text-[var(--teal)]"
+            initial={still ? false : { opacity: 0, x: -12 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.6, duration: 0.5, ease }}
           >
-            A collection of globally recognized certifications and credentials across cloud, databases, networking, data science, and communication.
+            ← click any line to verify
           </motion.p>
-        </div>
-
-        {/* Certifications Grid */}
-        <div className="flex flex-wrap justify-center gap-6">
-          {certifications.map((cert, i) => (
-            <motion.a
-              key={cert.id}
-              href={cert.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              initial={{ opacity: 0, y: 20 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: 0.2 + i * 0.08, ease: "easeOut" }}
-              className="group flex flex-col justify-between w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] bg-white border border-[#e5e7eb] rounded-2xl p-6 lg:p-7 hover:border-[#111111] hover:shadow-xl hover:shadow-[rgba(0,0,0,0.06)] hover:-translate-y-0.5 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111111]"
-              aria-label={`View credential for ${cert.title}`}
-            >
-              <div>
-                <div className="flex items-center gap-3 mb-5">
-                  <div className="w-10 h-10 rounded-full bg-[#f8fafc] border border-[#e5e7eb] flex items-center justify-center text-[#111111] group-hover:bg-[#111111] group-hover:text-white transition-colors duration-300">
-                    {cert.type === "credential" ? <ShieldCheck size={18} /> : <FileBadge size={18} />}
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-mono font-semibold tracking-wider text-[#6b7280] uppercase">
-                      {cert.category}
-                    </p>
-                    <p className="text-[12px] font-medium text-[#374151]">
-                      {cert.issuer}
-                    </p>
-                  </div>
-                </div>
-
-                <h3 className="text-lg font-bold text-[#111111] leading-snug mb-2 group-hover:text-[#2563eb] transition-colors duration-300">
-                  {cert.title}
-                </h3>
-                {cert.shortName && (
-                  <p className="text-sm font-mono text-[#6b7280] mb-4">
-                    {cert.shortName}
-                  </p>
-                )}
-              </div>
-
-              <div className="mt-8 flex items-center gap-1.5 text-sm font-bold text-[#111111]">
-                {cert.type === "credential" ? "View Credential" : "View Certificate"}
-                <ArrowUpRight size={16} className="text-[#6b7280] group-hover:text-[#111111] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-300" />
-              </div>
-            </motion.a>
-          ))}
-        </div>
+        </Reveal>
       </div>
     </section>
   );

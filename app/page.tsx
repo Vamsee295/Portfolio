@@ -1,8 +1,3 @@
-"use client";
-
-import { useState } from "react";
-import { AnimatePresence } from "framer-motion";
-import LoadingScreen from "./Components/loader/LoadingScreen";
 import Navbar from "./Components/navbar/Navbar";
 import Hero from "./Components/hero/Hero";
 import TechStrip from "./Components/tech-strip/TechStrip";
@@ -13,16 +8,12 @@ import Certifications from "./Components/certifications/Certifications";
 import Skills from "./Components/skills/Skills";
 import FinalCTA from "./Components/footer/FinalCTA";
 import Footer from "./Components/footer/Footer";
+import HelloStartup from "./Components/intro/HelloStartup";
+import TalkSticker from "./Components/common/TalkSticker";
 
 export default function Home() {
-  const [loading, setLoading] = useState(true);
-
   return (
-    <>
-      <AnimatePresence>
-        {loading && <LoadingScreen onComplete={() => setLoading(false)} />}
-      </AnimatePresence>
-
+    <HelloStartup>
       <Navbar />
       <main id="main-content">
         <Hero />
@@ -35,6 +26,7 @@ export default function Home() {
         <FinalCTA />
       </main>
       <Footer />
-    </>
+      <TalkSticker />
+    </HelloStartup>
   );
 }

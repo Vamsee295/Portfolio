@@ -1,73 +1,38 @@
-import { GitBranch, Mail } from "lucide-react";
 import { profile } from "../../data/profile";
 
-const LinkedinIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-    <rect width="4" height="12" x="2" y="9" />
-    <circle cx="4" cy="4" r="2" />
-  </svg>
-);
+const links = [
+  { label: "GitHub", href: profile.social.github, external: true },
+  { label: "LinkedIn", href: profile.social.linkedin, external: true },
+  { label: "Email", href: profile.social.email, external: false },
+  { label: "Resume", href: profile.resume, external: false },
+];
 
 export default function Footer() {
-  const currentYear = new Date().getFullYear();
-
   return (
-    <footer
-      className="border-t border-[#e5e7eb] py-10 bg-[#fafafa]"
-      role="contentinfo"
-    >
-      <div className="max-w-6xl mx-auto px-6">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
-          {/* Left — Brand */}
-          <div className="text-center sm:text-left">
-            <p className="font-black text-sm tracking-[0.18em] uppercase text-[#111111] mb-1">
-              VAMSEE
-            </p>
-            <p className="text-xs font-mono text-[#9ca3af] tracking-wider">
-              AI · SOFTWARE · DATA
-            </p>
-          </div>
-
-          {/* Center — Social links */}
-          <nav aria-label="Footer social links" className="flex items-center gap-6">
-            <a
-              href={profile.social.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="GitHub (opens in new tab)"
-              className="flex items-center gap-1.5 text-xs font-medium text-[#6b7280] hover:text-[#111111] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563eb] rounded"
-            >
-              <GitBranch size={14} aria-hidden="true" />
-              GitHub
-            </a>
-            <a
-              href={profile.social.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="LinkedIn (opens in new tab)"
-              className="flex items-center gap-1.5 text-xs font-medium text-[#6b7280] hover:text-[#111111] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563eb] rounded"
-            >
-              <LinkedinIcon />
-              LinkedIn
-            </a>
-            <a
-              href={profile.social.email}
-              aria-label="Send email"
-              className="flex items-center gap-1.5 text-xs font-medium text-[#6b7280] hover:text-[#111111] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563eb] rounded"
-            >
-              <Mail size={14} aria-hidden="true" />
-              Email
-            </a>
-          </nav>
-
-          {/* Right — Copyright */}
-          <p className="text-xs font-mono text-[#9ca3af]">
-            © {currentYear} Vamsee Vemulapalli
-          </p>
+    <footer role="contentinfo" className="dots-night relative overflow-hidden border-t-[2.5px] border-ink bg-night text-paper">
+      <div className="mx-auto flex max-w-[1180px] flex-col gap-8 px-[clamp(18px,4vw,40px)] pt-14 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <p className="font-cond text-lg font-bold uppercase tracking-[0.12em]">Vamsee Vemulapalli</p>
+          <p className="font-mono text-xs tracking-[0.14em] text-paper/50">AI · SOFTWARE · DATA</p>
         </div>
+        <nav aria-label="Footer links" className="flex flex-wrap gap-x-8 gap-y-3">
+          {links.map((l) => (
+            <a
+              key={l.label}
+              href={l.href}
+              {...(l.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+              className="font-cond text-lg font-bold uppercase tracking-[0.1em] text-paper/70 underline-offset-4 hover:text-[var(--accent-l)] hover:underline"
+            >
+              {l.label}
+            </a>
+          ))}
+        </nav>
+        <p className="font-mono text-xs text-paper/50">© {new Date().getFullYear()} · built by hand</p>
       </div>
+      {/* Oversized wordmark, cropped by the footer's bottom edge */}
+      <p aria-hidden className="mt-10 select-none text-center font-display text-[23vw] uppercase leading-[0.72] text-transparent [-webkit-text-stroke:2px_rgba(245,239,230,0.22)]">
+        Vamsee
+      </p>
     </footer>
   );
 }
-

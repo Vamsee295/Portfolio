@@ -2,25 +2,55 @@
 
 /* ─── Color System ─────────────────────────────────────────── */
 :root {
-  --bg-primary: #ffffff;
-  --bg-secondary: #f8fafc;
-  --bg-surface: #fafafa;
-  --text-primary: #111111;
-  --text-secondary: #6b7280;
-  --text-tertiary: #9ca3af;
-  --border: #e5e7eb;
-  --border-subtle: #f3f4f6;
-  --accent: #2563eb;
-  --accent-light: #dbeafe;
-  --accent-muted: #eff6ff;
+  /* Paper & Ink palette */
+  --paper: #F5EFE6;
+  --paper2: #ECE3D4;
+  --card: #FBF8F2;
+  --ink: #191614;
+  --night: #151311;
+  --body: rgba(25, 22, 20, 0.78);
+  --mute: rgba(25, 22, 20, 0.56);
+  --line: rgba(25, 22, 20, 0.14);
+  --accent: #C8603A;
+  --accent-d: #A34A28;
+  --accent-l: #F08A5D;
+  --teal: #2F6F6A;
+  --mint: #7CC9B2;
+  --gold: #E3A72F;
+  --bw: 2.5px;
+  --sh: 5px 6px 0 var(--ink);
+
+  /* Legacy names, remapped so untouched sections pick up the new palette */
+  --bg-primary: var(--paper);
+  --bg-secondary: var(--paper2);
+  --bg-surface: var(--card);
+  --text-primary: var(--ink);
+  --text-secondary: var(--body);
+  --text-tertiary: var(--mute);
+  --border: var(--line);
+  --border-subtle: var(--line);
+  --accent-light: #F6D9CB;
+  --accent-muted: #FBEDE5;
 }
 
 /* ─── Tailwind Theme Override ──────────────────────────────── */
 @theme inline {
-  --color-background: var(--bg-primary);
-  --color-foreground: var(--text-primary);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-background: var(--paper);
+  --color-foreground: var(--ink);
+  --color-paper: var(--paper);
+  --color-paper2: var(--paper2);
+  --color-card: var(--card);
+  --color-ink: var(--ink);
+  --color-night: var(--night);
+  --color-accent: var(--accent);
+  --color-teal: var(--teal);
+  --color-mint: var(--mint);
+  --color-gold: var(--gold);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-jetbrains);
+  --font-display: var(--font-anton);
+  --font-cond: var(--font-barlow);
+  --font-hand: var(--font-caveat);
 }
 
 /* ─── Base Styles ──────────────────────────────────────────── */
@@ -31,6 +61,7 @@
 }
 
 html {
+  overflow-x: clip;
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -39,22 +70,24 @@ html {
 body {
   background: var(--bg-primary);
   color: var(--text-primary);
-  font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
   line-height: 1.6;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 /* ─── Typography ───────────────────────────────────────────── */
+@layer base {
 h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
   line-height: 1.1;
   letter-spacing: -0.02em;
-  color: var(--text-primary);
+  color: inherit;
 }
 
 p {
-  color: var(--text-secondary);
+  color: inherit;
   line-height: 1.7;
+}
 }
 
 /* ─── Focus Styles (Accessibility) ────────────────────────── */
@@ -72,13 +105,8 @@ p {
 
 /* ─── Selection ────────────────────────────────────────────── */
 ::selection {
-  background: #000000;
-  color: #ffffff;
-}
-
-::-moz-selection {
-  background: #000000;
-  color: #ffffff;
+  background: var(--accent);
+  color: var(--paper);
 }
 
 /* ─── Marquee Animation ────────────────────────────────────── */
@@ -154,3 +182,51 @@ p {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-tertiary);
 }
+
+/* ─── Paper texture: dot grid behind everything ───────────── */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: radial-gradient(rgba(25, 22, 20, 0.075) 1.1px, transparent 1.5px) 0 0 / 13px 13px;
+}
+
+.dots-night {
+  background-image: radial-gradient(rgba(245, 239, 230, 0.06) 1.1px, transparent 1.5px);
+  background-size: 13px 13px;
+}
+
+/* ─── Sticker surfaces ─────────────────────────────────────── */
+.stk {
+  background: var(--card);
+  border: var(--bw) solid var(--ink);
+  border-radius: 16px;
+  box-shadow: var(--sh);
+}
+
+.btn-stk {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--accent);
+  color: var(--paper);
+  border: var(--bw) solid var(--ink);
+  border-radius: 12px;
+  box-shadow: 4px 5px 0 var(--ink);
+  font: 700 20px/1 var(--font-barlow), sans-serif;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 16px 22px 15px;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.btn-stk:hover { transform: translate(-1px, -1px); box-shadow: 5px 6px 0 var(--ink); }
+.btn-stk:active { transform: translate(3px, 4px); box-shadow: 1px 1px 0 var(--ink); transition-duration: 0.05s; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes blink { 50% { opacity: 0; } }
+.caret { animation: blink 1s steps(1) infinite; }
+
+/* Anton ships one weight; stop headings from faux-bolding it. */
+.font-display { font-weight: 400; }
